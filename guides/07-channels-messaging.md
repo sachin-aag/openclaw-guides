@@ -96,6 +96,16 @@ If you want truly isolated agents per channel, configure two agents in your gate
 
 WhatsApp Business API requires phone-number verification, business credentials, and a Meta developer account. Great for production, terrible for "let me try this in 5 minutes." Get something working on Telegram first.
 
+## Used by the workshop tracks
+
+All three workshop tracks support Telegram as an optional notification channel:
+
+- **Track A (news-briefing-agent)** — receive your daily news digest in Telegram
+- **Track B (price-monitor)** — get price alerts when thresholds are crossed
+- **Track C (email-monitor)** — forward urgent email alerts to Telegram
+
+See each track's `.env.example` for the `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ALLOWED_USER_IDS` variables.
+
 ## Next
 
 - Tighten security before exposing your bot publicly → [02-install-local.md › Risks](02-install-local.md#risks)

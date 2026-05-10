@@ -32,13 +32,13 @@ That's the whole architecture. Everything else is *which* channel, *which* agent
 
 Think of OpenClaw as the **glue between humans and a coding agent**. The Gateway speaks one normalized language. Channels translate WhatsApp, Telegram, the browser, the CLI, into that language. The agent (Pi, by default) reads its own personality from `SOUL.md`, its long-term memory from `MEMORY.md`, and any short-term context from a session file. It then either replies in chat — or, if the heartbeat woke it up on a cron, messages *you* unprompted.
 
-## Your first workflow in 10 minutes — the daily review agent
+## Your first workflow in 10 minutes — the news briefing agent
 
-The "hello world" of OpenClaw isn't a chatbot. It's a **daily review agent** that runs every morning, reads yesterday's notes, and writes a one-page summary to `daily-review.md`.
+The "hello world" of OpenClaw isn't a chatbot. It's a **news briefing agent** that fetches RSS feeds, generates a structured daily digest, and optionally sends it to Telegram.
 
 ```bash
 git clone https://github.com/creators-stuttgart/openclaw-guides
-cd openclaw-guides/workflows/daily-review-agent
+cd openclaw-guides/workflows/news-briefing-agent
 
 npm install
 cp .env.example .env
@@ -47,15 +47,15 @@ cp .env.example .env
 npm run dev
 ```
 
-You should see a local web UI on `http://localhost:3000`. Send any message; the agent will append it to `notes/<today>.md`. To trigger the review manually:
+You should see a local web UI on `http://localhost:3000`. You can chat with the agent normally. To trigger the briefing manually:
 
 ```bash
-npm run review
+npm run briefing
 ```
 
-A new `daily-review.md` appears in the workflow folder. Open it. That's your agent's output, in a file you can edit.
+A new `workspace/briefings/<today>.md` appears with a structured news digest grouped by topic. That's your agent's output, in a file you can edit.
 
-For step-by-step details and the other two workshop tracks, see [workflows/daily-review-agent/README.md](../workflows/daily-review-agent/README.md).
+For step-by-step details and the other two workshop tracks, see [workflows/news-briefing-agent/README.md](../workflows/news-briefing-agent/README.md).
 
 ## Where to run it: local vs coral.inc vs VPS
 
@@ -151,7 +151,7 @@ Wherever you run OpenClaw. Local laptop = on disk in your project folder. VPS = 
 The OpenClaw runtime is free and open-source (MIT). Costs come from (1) the model API — typically $1–10/month for personal use, more if you're hammering it — and (2) hosting if you use a VPS or managed host (~€5–15/month).
 
 **Can I use it without writing TypeScript?**
-You configure OpenClaw via JSON/YAML and markdown. Custom skills are usually TypeScript, but for the workshop tracks (daily review, scratchpad, folder watcher) you don't write any TS — you only edit markdown and `.env`.
+You configure OpenClaw via JSON/YAML and markdown. Custom skills are usually TypeScript, but for the workshop tracks (news briefing, price monitor, email monitor) you don't write any TS — you only edit markdown, YAML, and `.env`.
 
 **Is it production-ready?**
 For personal use and small teams, yes — many builders are running it on VPSes. For high-traffic public products, treat it as you would any agent system: add rate limiting, observability, secret rotation, and a non-`Bash`-enabled tool policy.

@@ -18,9 +18,9 @@ The room is split into 3 zones plus an installation bar at the back.
 
 | Zone | Track | You support participants who picked... |
 |---|---|---|
-| **1** | A · daily-review | folks who want a morning summary agent |
-| **2** | B · scratchpad | folks who want a chat-driven note-taker |
-| **3** | C · folder-watcher | advanced folks using the heartbeat |
+| **1** | A · news-briefing | folks building a daily RSS news briefing agent |
+| **2** | B · price-monitor | folks building a price monitoring + alerting system |
+| **3** | C · email-monitor | advanced folks using IMAP + urgency classification |
 | **Installation bar** | (back of room) | anyone whose setup is broken in a deep way |
 
 You'll be assigned a zone before doors. **Stay in your zone.** Beginners pair-program with you, you get to know their context, you can fix things faster the second time.
@@ -47,7 +47,7 @@ The L2 move is the single most important rule. **Better that someone runs an age
 3. **`401 Unauthorized`** → API key isn't loaded in the shell. Restart terminal or `export $(grep -v '^#' .env | xargs)`.
 4. **Agent replies but doesn't write the file** → check `WORKSPACE_DIR` in `.env`. Should be `./workspace` (relative to the workflow folder).
 5. **Tone/language wrong after editing SOUL.md** → they didn't run `npm run reload`.
-6. **Cron / heartbeat doesn't fire on a laptop** → laptops sleep. For the workshop, use manual `npm run review` / `npm run scan` instead.
+6. **Cron / heartbeat doesn't fire on a laptop** → laptops sleep. For the workshop, use manual `npm run briefing` / `npm run check` / `npm run scan` instead.
 7. **Windows-specific issues** → push them to WSL2 if they're not already; otherwise straight to coral.inc.
 
 Full reference: [`guides/10-troubleshooting.md`](../../guides/10-troubleshooting.md). Read it once before doors.

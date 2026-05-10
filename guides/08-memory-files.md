@@ -59,8 +59,8 @@ Append-only. The agent writes here when it learns something durable.
 - Project "Frameworx event" confirmed 2026-05-09 16:00.
 
 ## 2026-05-09
-- New skill shipped: `daily-review-agent` (workshop track A).
-- TODO: ask Sachin if he wants the daily review at 07:30 or 08:00.
+- New skill shipped: `news-briefing-agent` (workshop track A).
+- TODO: ask Sachin if he wants the morning briefing at 07:30 or 08:00.
 ```
 
 ## How the agent reads them

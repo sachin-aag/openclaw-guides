@@ -15,9 +15,9 @@
 
 | Track | What you'll build | Difficulty |
 |---|---|---|
-| **A** · daily-review | Manual trigger writes `daily-review.md` from yesterday's notes | beginner |
-| **B** · scratchpad | `save this: …` appends to `notes.md`, agent confirms in chat | beginner |
-| **C** · folder-watcher | Drop a `.txt` in `inbox/`, get a 3-bullet summary in `summaries/` | advanced (heartbeat) |
+| **A** · news-briefing | Fetches RSS feeds, generates a daily news briefing to markdown + optional Telegram | beginner |
+| **B** · price-monitor | Watches product/stock prices, alerts when thresholds are crossed | intermediate (heartbeat) |
+| **C** · email-monitor | Monitors Gmail inbox via IMAP, summarizes & classifies emails by urgency | advanced (heartbeat + IMAP) |
 
 ---
 
@@ -25,7 +25,7 @@
 
 ```bash
 git clone https://github.com/creators-stuttgart/openclaw-guides
-cd openclaw-guides/workflows/<your-track>      # daily-review-agent | scratchpad-assistant | folder-watcher
+cd openclaw-guides/workflows/<your-track>      # news-briefing-agent | price-monitor | email-monitor
 npm install
 cp .env.example .env       # paste your API key in the file
 npm run dev

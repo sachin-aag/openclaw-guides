@@ -21,11 +21,11 @@ If you don't have Node, install from [nodejs.org](https://nodejs.org) or via Hom
 
 ### 1. Clone a workflow starter
 
-For the workshop, start with the daily review agent:
+For the workshop, start with the news briefing agent:
 
 ```bash
 git clone https://github.com/creators-stuttgart/openclaw-guides
-cd openclaw-guides/workflows/daily-review-agent
+cd openclaw-guides/workflows/news-briefing-agent
 ```
 
 ### 2. Install dependencies

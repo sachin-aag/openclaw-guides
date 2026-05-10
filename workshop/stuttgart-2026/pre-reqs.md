@@ -30,11 +30,13 @@
 
   ```bash
   git clone https://github.com/creators-stuttgart/openclaw-guides
-  cd openclaw-guides/workflows/daily-review-agent
+  cd openclaw-guides/workflows/news-briefing-agent
   npm install
   ```
 
   If `npm install` fails, post in the workshop Discord (link below) — we can help before doors open.
+
+- [ ] **Optional: set up a Telegram bot** if you want notifications from your agent. Message [@BotFather](https://t.me/botfather) on Telegram, create a bot, and save the token. Not required — all tracks work with the Web UI alone.
 
 ## Optional escape hatch
 

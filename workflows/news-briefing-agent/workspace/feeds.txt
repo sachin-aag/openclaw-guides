@@ -1,0 +1,7 @@
+# RSS feeds to include in the daily briefing (one URL per line).
+# Lines starting with # are ignored.
+# Add your own feeds below — the more specific, the better your briefing.
+
+https://hnrss.org/frontpage
+https://feeds.arstechnica.com/arstechnica/index
+https://www.theverge.com/rss/index.xml

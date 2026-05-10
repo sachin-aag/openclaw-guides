@@ -1,0 +1,36 @@
+# Gateway config for the Price Monitor
+# See https://docs.openclaw.ai for the full reference.
+
+timezone: ${GATEWAY_TZ:-Europe/Berlin}
+
+agents:
+  default:
+    provider: ${OPENCLAW_PROVIDER}
+    model: ${OPENCLAW_MODEL}
+    workspace: ${WORKSPACE_DIR:-./workspace}
+    memory:
+      soul: SOUL.md
+      user: USER.md
+      memory: MEMORY.md
+
+channels:
+  - type: web
+    host: ${OPENCLAW_HOST:-127.0.0.1}
+    port: ${OPENCLAW_PORT:-3000}
+
+  # Uncomment to enable Telegram alerts.
+  # - type: telegram
+  #   token: ${TELEGRAM_BOT_TOKEN}
+  #   allowed_user_ids: ${TELEGRAM_ALLOWED_USER_IDS}
+
+skills:
+  - name: price-monitor
+    file: ./skills/price-monitor.ts
+    args:
+      watchlist: ${WATCHLIST_FILE:-workspace/watchlist.yaml}
+      log_file: ${PRICE_LOG_FILE:-workspace/price-log.md}
+      notify: web
+
+heartbeat:
+  interval_minutes: ${MONITOR_INTERVAL_MIN:-15}
+  skill: price-monitor

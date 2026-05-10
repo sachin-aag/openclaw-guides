@@ -25,9 +25,9 @@ Practical, opinionated guides for getting started with [OpenClaw](https://opencl
 │   ├── 10-troubleshooting.md      Common errors and fixes
 │   └── 11-pi.md                   The Pi coding agent embedded in OpenClaw
 ├── workflows/                     starter projects
-│   ├── daily-review-agent/        Track A
-│   ├── scratchpad-assistant/      Track B
-│   └── folder-watcher/            Track C (advanced)
+│   ├── news-briefing-agent/       Track A (beginner)
+│   ├── price-monitor/             Track B (intermediate)
+│   └── email-monitor/             Track C (advanced)
 └── workshop/
     └── stuttgart-2026/            event-day materials
         ├── pre-reqs.md            install BEFORE arriving

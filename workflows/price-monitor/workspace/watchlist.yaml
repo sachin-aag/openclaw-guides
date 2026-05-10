@@ -1,0 +1,31 @@
+# Price Monitor — watchlist
+# Define items to monitor. The agent checks each on every heartbeat.
+#
+# Fields:
+#   name:       Human-readable label for alerts
+#   url:        RSS feed or web page URL to fetch
+#   type:       "rss" or "webpage"
+#   threshold:  Price threshold that triggers an alert
+#   direction:  "below" = alert when price drops below threshold
+#               "above" = alert when price rises above threshold
+#
+# Examples below — replace with your own targets.
+
+items:
+  - name: "Bitcoin (BTC/USD)"
+    url: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=BTC-USD"
+    type: rss
+    threshold: 50000
+    direction: below
+
+  - name: "Raspberry Pi 5 (8GB)"
+    url: "https://www.raspberrypi.com/products/raspberry-pi-5/"
+    type: webpage
+    threshold: 80
+    direction: below
+
+  - name: "Gold (XAU/USD)"
+    url: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=GC=F"
+    type: rss
+    threshold: 2500
+    direction: above

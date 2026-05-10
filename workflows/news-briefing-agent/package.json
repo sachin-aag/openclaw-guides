@@ -1,13 +1,15 @@
 {
-  "name": "openclaw-scratchpad-assistant",
+  "name": "openclaw-news-briefing-agent",
   "version": "0.1.0",
   "private": true,
-  "description": "Workshop Track B — chat-driven note-taking agent on OpenClaw + Pi.",
+  "description": "Workshop Track A — news briefing agent built on OpenClaw + Pi.",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "openclaw dev --config gateway.config.yaml",
-    "reload": "openclaw reload"
+    "briefing": "openclaw skill run news-briefing",
+    "reload": "openclaw reload",
+    "lint": "echo 'TODO: add eslint when source grows'"
   },
   "engines": {
     "node": ">=20"

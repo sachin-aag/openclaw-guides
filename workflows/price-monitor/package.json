@@ -1,13 +1,13 @@
 {
-  "name": "openclaw-folder-watcher",
+  "name": "openclaw-price-monitor",
   "version": "0.1.0",
   "private": true,
-  "description": "Workshop Track C — heartbeat-driven folder watcher on OpenClaw + Pi.",
+  "description": "Workshop Track B — price monitoring agent built on OpenClaw + Pi.",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "openclaw dev --config gateway.config.yaml",
-    "scan": "openclaw skill run folder-watcher",
+    "check": "openclaw skill run price-monitor",
     "reload": "openclaw reload"
   },
   "engines": {

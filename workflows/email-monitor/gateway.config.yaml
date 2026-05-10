@@ -1,0 +1,31 @@
+# Gateway config for the Email Monitor
+# See https://docs.openclaw.ai for the full reference.
+
+timezone: ${GATEWAY_TZ:-Europe/Berlin}
+
+agents:
+  default:
+    provider: ${OPENCLAW_PROVIDER}
+    model: ${OPENCLAW_MODEL}
+    workspace: ${WORKSPACE_DIR:-./workspace}
+    memory:
+      soul: SOUL.md
+      user: USER.md
+      memory: MEMORY.md
+
+channels:
+  - type: web
+    host: ${OPENCLAW_HOST:-127.0.0.1}
+    port: ${OPENCLAW_PORT:-3000}
+
+skills:
+  - name: email-monitor
+    file: ./skills/email-monitor.ts
+    args:
+      digest_dir: ${EMAIL_DIGEST_DIR:-workspace/email-digests}
+      log_file: workspace/email-log.md
+      notify: web
+
+heartbeat:
+  interval_minutes: ${EMAIL_CHECK_INTERVAL_MIN:-5}
+  skill: email-monitor

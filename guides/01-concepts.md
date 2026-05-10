@@ -62,7 +62,7 @@ OpenClaw is **provider-agnostic**. You configure which model to use (Claude, GPT
 
 ### Skills
 
-A **Skill** is a reusable, named capability your agent can invoke — think "tools, but with a system prompt and a workflow attached." The three workshop tracks (daily review, scratchpad, folder watcher) are each Skills.
+A **Skill** is a reusable, named capability your agent can invoke — think "tools, but with a system prompt and a workflow attached." The three workshop tracks (news briefing, price monitor, email monitor) are each Skills.
 
 ## Key principles
 

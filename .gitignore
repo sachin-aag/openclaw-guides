@@ -43,8 +43,10 @@ workflows/**/workspace/USER.md
 workflows/**/workspace/MEMORY.md
 workflows/**/workspace/notes/
 workflows/**/workspace/notes.md
-workflows/**/workspace/daily-review.md
-workflows/**/workspace/inbox/
+workflows/**/workspace/briefings/*.md
+workflows/**/workspace/email-digests/*.md
+workflows/**/workspace/price-log.md
+workflows/**/workspace/email-log.md
 workflows/**/workspace/summaries/
 
 # But keep the workspace/README.md that explains what gets scaffolded.

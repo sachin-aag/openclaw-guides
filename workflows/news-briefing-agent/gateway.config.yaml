@@ -1,4 +1,4 @@
-# Gateway config for the Daily Review Agent
+# Gateway config for the News Briefing Agent
 # See https://docs.openclaw.ai for the full reference.
 
 timezone: ${GATEWAY_TZ:-Europe/Berlin}
@@ -18,16 +18,21 @@ channels:
     host: ${OPENCLAW_HOST:-127.0.0.1}
     port: ${OPENCLAW_PORT:-3000}
 
+  # Uncomment to enable Telegram notifications.
+  # - type: telegram
+  #   token: ${TELEGRAM_BOT_TOKEN}
+  #   allowed_user_ids: ${TELEGRAM_ALLOWED_USER_IDS}
+
 skills:
-  - name: daily-review
-    file: ./skills/daily-review.ts
+  - name: news-briefing
+    file: ./skills/news-briefing.ts
     args:
-      look_back_days: ${REVIEW_LOOKBACK_DAYS:-1}
-      output: ${REVIEW_OUTPUT:-daily-review.md}
+      feeds_file: ${FEEDS_FILE:-workspace/feeds.txt}
+      output_dir: ${BRIEFING_OUTPUT_DIR:-workspace/briefings}
       notify: web
 
 # Uncomment when deploying to a VPS to run automatically every morning.
 # cron:
-#   - name: morning-review
+#   - name: morning-briefing
 #     schedule: "30 7 * * *"
-#     skill: daily-review
+#     skill: news-briefing

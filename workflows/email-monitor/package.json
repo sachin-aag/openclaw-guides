@@ -1,15 +1,14 @@
 {
-  "name": "openclaw-daily-review-agent",
+  "name": "openclaw-email-monitor",
   "version": "0.1.0",
   "private": true,
-  "description": "Workshop Track A — daily review agent built on OpenClaw + Pi.",
+  "description": "Workshop Track C — email monitoring agent built on OpenClaw + Pi.",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "openclaw dev --config gateway.config.yaml",
-    "review": "openclaw skill run daily-review",
-    "reload": "openclaw reload",
-    "lint": "echo 'TODO: add eslint when source grows'"
+    "scan": "openclaw skill run email-monitor",
+    "reload": "openclaw reload"
   },
   "engines": {
     "node": ">=20"

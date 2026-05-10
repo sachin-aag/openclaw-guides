@@ -10,12 +10,12 @@ Schedule named tasks at fixed times. Defined in `gateway.config.yaml` (or your g
 
 ```yaml
 cron:
-  - name: daily-review
+  - name: morning-briefing
     schedule: "30 7 * * *"      # 07:30 every day, server time
-    skill: daily-review
+    skill: news-briefing
     args:
-      look_back_days: 1
-      output: daily-review.md
+      feeds_file: workspace/feeds.txt
+      output_dir: workspace/briefings
       notify: web
 ```
 
@@ -68,13 +68,12 @@ Pseudocode of what a complete daily review setup looks like:
 timezone: Europe/Berlin
 
 cron:
-  - name: morning-review
+  - name: morning-briefing
     schedule: "30 7 * * *"
-    skill: daily-review
+    skill: news-briefing
     args:
-      input_glob: "notes/*.md"
-      look_back_days: 1
-      output: daily-review.md
+      feeds_file: workspace/feeds.txt
+      output_dir: workspace/briefings
       notify: web
 
   - name: evening-prompt
@@ -113,11 +112,11 @@ Cron jobs may fire twice (machine restart, daylight saving change, manual re-run
 Practical tip: name output files by the date they cover, not the run time:
 
 ```
-daily-review-2026-05-09.md   # good — overwrites cleanly
-daily-review-1715234400.md   # bad — every run = new file
+briefing-2026-05-09.md       # good — overwrites cleanly
+briefing-1715234400.md       # bad — every run = new file
 ```
 
 ## Next
 
-- Build the daily-review skill end-to-end → [../workflows/daily-review-agent/README.md](../workflows/daily-review-agent/README.md)
+- Build the news-briefing skill end-to-end → [../workflows/news-briefing-agent/README.md](../workflows/news-briefing-agent/README.md)
 - Things firing twice or not at all → [10-troubleshooting.md › Cron](10-troubleshooting.md#cron-issues)
