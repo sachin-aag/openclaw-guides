@@ -13,7 +13,7 @@ The fastest way to get a working OpenClaw agent. Best for hacking, fast iteratio
 | npm | 10+ | `npm -v` |
 | git | any recent | `git --version` |
 | A code editor | any | — |
-| A model API key | one of | Anthropic, OpenAI, or Google |
+| A model API key | one of | Anthropic, OpenAI, Google, or Featherless |
 
 If you don't have Node, install from [nodejs.org](https://nodejs.org) or via Homebrew (`brew install node@22`).
 
@@ -44,9 +44,9 @@ cp .env.example .env
 
 Open `.env` in your editor and set at least:
 
-- `OPENCLAW_PROVIDER` — `anthropic`, `openai`, or `google`
-- `OPENCLAW_MODEL` — e.g. `claude-sonnet-4-6` or `gpt-5.4` or `gemini-3.1-pro`
-- The matching API key: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`
+- `OPENCLAW_PROVIDER` — `anthropic`, `openai`, `google`, or `featherless`
+- `OPENCLAW_MODEL` — e.g. `claude-sonnet-4-6`, `gpt-5.4`, `gemini-3.1-pro`, or a Featherless-hosted model
+- The matching API key: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, or `FEATHERLESS_API_KEY`
 - `WORKSPACE_DIR` — folder the agent can write to (default: `./workspace`)
 
 ### 4. Run
@@ -86,7 +86,7 @@ Your `.env` file holds keys that bill against your accounts. If you `git add .en
 **Mitigations:**
 
 - Confirm `.env` is in `.gitignore` (it is in our starter — check anyway: `git check-ignore .env`).
-- Set a hard spending cap in your provider's dashboard (Anthropic, OpenAI, and Google all support this).
+- Set a hard spending cap in your provider's dashboard (Anthropic, OpenAI, Google, and Featherless all support this).
 - Rotate keys after the workshop if you copy-pasted them anywhere.
 
 ### Risk 3 — No firewall, no audit log

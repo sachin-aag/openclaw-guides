@@ -21,7 +21,7 @@ Go to [coral.inc](https://coral.inc) and create an account. Sign in with GitHub 
 From the dashboard, click **New agent**. You'll get a setup wizard with two important choices:
 
 - **Template** — pick `daily-review` for the workshop's Track A, `scratchpad` for Track B, or `blank` to start from scratch.
-- **Model provider** — paste an API key for Anthropic, OpenAI, or Google. coral.inc stores it encrypted at rest.
+- **Model provider** — paste an API key for Anthropic, OpenAI, Google, or Featherless. coral.inc stores it encrypted at rest.
 
 ### 3. Open the web channel
 

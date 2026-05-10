@@ -58,7 +58,7 @@ For authoring patterns, see [08-memory-files.md](08-memory-files.md).
 
 ### Models
 
-OpenClaw is **provider-agnostic**. You configure which model to use (Claude, GPT, Gemini, local) per agent or per channel. Switching providers means changing one line of config — your agent code, memory, and skills stay the same.
+OpenClaw is **provider-agnostic**. You configure which model to use (Claude, GPT, Gemini, Featherless open-source models, local) per agent or per channel. Switching providers means changing one line of config — your agent code, memory, and skills stay the same.
 
 ### Skills
 

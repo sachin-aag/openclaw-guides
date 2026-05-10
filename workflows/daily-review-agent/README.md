@@ -16,7 +16,7 @@ You run `npm run review`, a `daily-review.md` appears in the workspace folder, a
 ## Prerequisites
 
 - Node 20+ (`node -v`)
-- An API key for one of: Anthropic, OpenAI, Google
+- An API key for one of: Anthropic, OpenAI, Google, Featherless
 - ~10 minutes
 
 ## Setup

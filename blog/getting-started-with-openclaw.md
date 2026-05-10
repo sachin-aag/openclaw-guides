@@ -42,7 +42,7 @@ cd openclaw-guides/workflows/daily-review-agent
 
 npm install
 cp .env.example .env
-# add your model API key (Anthropic, OpenAI, Google — pick one)
+# add your model API key (Anthropic, OpenAI, Google, Featherless — pick one)
 
 npm run dev
 ```
@@ -142,10 +142,10 @@ No. Claude Code and Cursor are coding assistants you talk to in an IDE or termin
 No. Memory is markdown files. The agent reads them on each turn or selectively via the `Read` tool.
 
 **Which AI models does OpenClaw support?**
-Any provider Pi supports: Anthropic (Claude), OpenAI (GPT family), Google (Gemini), and local models. You configure this in the model registry; you can swap providers without changing your agent code.
+Any provider Pi supports: Anthropic (Claude), OpenAI (GPT family), Google (Gemini), Featherless (open-source models), and local models. You configure this in the model registry; you can swap providers without changing your agent code.
 
 **Where does my data live?**
-Wherever you run OpenClaw. Local laptop = on disk in your project folder. VPS = on disk on the VPS. coral.inc = managed by coral. The model API call still goes to whichever provider you've configured (Anthropic, OpenAI, etc.) — that's the only thing that leaves your machine.
+Wherever you run OpenClaw. Local laptop = on disk in your project folder. VPS = on disk on the VPS. coral.inc = managed by coral. The model API call still goes to whichever provider you've configured (Anthropic, OpenAI, Featherless, etc.) — that's the only thing that leaves your machine.
 
 **How much does it cost to run?**
 The OpenClaw runtime is free and open-source (MIT). Costs come from (1) the model API — typically $1–10/month for personal use, more if you're hammering it — and (2) hosting if you use a VPS or managed host (~€5–15/month).

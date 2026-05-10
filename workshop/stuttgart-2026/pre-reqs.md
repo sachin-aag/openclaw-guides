@@ -16,9 +16,10 @@
 ## Mandatory: pick one
 
 - [ ] **A model API key** for one of:
-  - **Anthropic** ([console.anthropic.com](https://console.anthropic.com)) — recommended, $5 free credit on signup, the workshop tracks are tuned for Claude.
+  - **Anthropic** ([console.anthropic.com](https://console.anthropic.com)) — recommended, $5 free credit on signup, the workshop tracks are tuned for Claude. **Note:** a Claude Pro/Team subscription does *not* give you API access. You need API credits loaded at [console.anthropic.com](https://console.anthropic.com).
   - **OpenAI** ([platform.openai.com](https://platform.openai.com)) — works fine, no free credit.
   - **Google AI Studio** ([aistudio.google.com](https://aistudio.google.com)) — free tier available, model latency varies.
+  - **Featherless** ([featherless.ai](https://featherless.ai)) — generous free tier, access to a wide range of open-source models. **Caveat:** most Featherless models top out at 32K context, which can be tight for OpenClaw agents that load `SOUL.md` + `MEMORY.md` + notes into every turn. Fine for the workshop; keep an eye on context limits in longer sessions.
 
   **Set a hard spending limit of €10/mo in your provider dashboard.** Costs accidents happen; ceilings prevent regret.
 
