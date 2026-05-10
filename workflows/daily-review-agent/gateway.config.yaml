@@ -1,0 +1,33 @@
+# Gateway config for the Daily Review Agent
+# See https://docs.openclaw.ai for the full reference.
+
+timezone: ${GATEWAY_TZ:-Europe/Berlin}
+
+agents:
+  default:
+    provider: ${OPENCLAW_PROVIDER}
+    model: ${OPENCLAW_MODEL}
+    workspace: ${WORKSPACE_DIR:-./workspace}
+    memory:
+      soul: SOUL.md
+      user: USER.md
+      memory: MEMORY.md
+
+channels:
+  - type: web
+    host: ${OPENCLAW_HOST:-127.0.0.1}
+    port: ${OPENCLAW_PORT:-3000}
+
+skills:
+  - name: daily-review
+    file: ./skills/daily-review.ts
+    args:
+      look_back_days: ${REVIEW_LOOKBACK_DAYS:-1}
+      output: ${REVIEW_OUTPUT:-daily-review.md}
+      notify: web
+
+# Uncomment when deploying to a VPS to run automatically every morning.
+# cron:
+#   - name: morning-review
+#     schedule: "30 7 * * *"
+#     skill: daily-review

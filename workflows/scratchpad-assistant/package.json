@@ -1,0 +1,22 @@
+{
+  "name": "openclaw-scratchpad-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Workshop Track B — chat-driven note-taking agent on OpenClaw + Pi.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "openclaw dev --config gateway.config.yaml",
+    "reload": "openclaw reload"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@openclaw/cli": "^0.x",
+    "@openclaw/gateway": "^0.x",
+    "@mariozechner/pi-coding-agent": "^0.73.0",
+    "@mariozechner/pi-ai": "^0.73.0",
+    "dotenv": "^16.4.5"
+  }
+}
