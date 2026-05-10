@@ -1,4 +1,4 @@
-# 10 · Troubleshooting
+# 06 · Troubleshooting
 
 The stuff we expect to break, and how to unstick it. Volunteers should skim this before the workshop.
 
@@ -30,7 +30,7 @@ npm config set registry https://registry.npmjs.org/
 npm install --no-audit --no-fund
 ```
 
-If it still hangs, switch networks (mobile hotspot during the workshop), or use the shared coral.inc instance — see [03-deploy-coral.md](03-deploy-coral.md).
+If it still hangs, switch networks (mobile hotspot during the workshop), or use the shared coral.inc instance — see [02-deploy-coral.md](02-deploy-coral.md).
 
 ### `EACCES` permission errors
 
@@ -108,13 +108,13 @@ Then:
 
 ### Cron didn't fire
 
-- Is the gateway actually running at the scheduled time? (Local laptops sleep — see [09-cron-and-heartbeat.md › Local laptop reality check](09-cron-and-heartbeat.md#local-laptop-reality-check).)
+- Is the gateway actually running at the scheduled time? (Local laptops sleep — see [04-cron-and-heartbeat.md › Local laptop reality check](../concepts/04-cron-and-heartbeat.md#local-laptop-reality-check).)
 - Is the timezone right? `date` on the box vs your `gateway.config.yaml > timezone:`.
 - Are you sure the cron expression is what you think it is? Test on [crontab.guru](https://crontab.guru).
 
 ### Cron fired twice
 
-Daylight saving change, or you restarted the gateway during the firing window. Make your skill idempotent — see the rule in [09-cron-and-heartbeat.md › Idempotency rule](09-cron-and-heartbeat.md#idempotency-rule).
+Daylight saving change, or you restarted the gateway during the firing window. Make your skill idempotent — see the rule in [04-cron-and-heartbeat.md › Idempotency rule](../concepts/04-cron-and-heartbeat.md#idempotency-rule).
 
 ## Channel issues
 
@@ -130,7 +130,7 @@ Open the browser console (`Cmd-Opt-J` / `Ctrl-Shift-J`). If you see WebSocket er
 
 ### Discord bot shows offline
 
-- The bot needs to be invited to a server it has permissions in. Re-do step 2 of [07-channels-messaging.md › Discord](07-channels-messaging.md#discord).
+- The bot needs to be invited to a server it has permissions in. Re-do step 2 of [05-channels-messaging.md › Discord](05-channels-messaging.md#discord).
 - The token must match the application — regenerating the token invalidates the previous one.
 
 ## Volunteer triage cheat sheet

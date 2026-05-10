@@ -1,26 +1,25 @@
 # Track C · Email Monitor
 
-> An OpenClaw skill that connects to a Gmail inbox via IMAP, checks for new unread emails on a heartbeat, summarizes them, classifies by urgency, and alerts on urgent ones. A real system for taming inbox overload.
+> A standalone skill that connects to a Gmail inbox via IMAP, checks for new unread emails, summarizes them with an LLM, classifies by urgency, and saves digests as markdown. A real system for taming inbox overload.
 
 ## What it does
 
 - Connects to your Gmail via IMAP (using a Gmail App Password).
-- On every heartbeat (default: 5 minutes), checks for new unread emails.
-- Sends email headers + body snippets to the model for summarization and urgency classification.
+- Checks for new unread emails.
+- Sends email headers + body snippets to the LLM for summarization and urgency classification.
 - Writes a categorized digest to `workspace/email-digests/<timestamp>.md`.
-- Urgent (🔴) emails trigger an immediate alert in the Web UI chat.
+- Urgent (🔴) emails are highlighted in the console output.
 - Every check is logged to `workspace/email-log.md` for audit.
 
 ## Definition of done (workshop bar)
 
-Configure your Gmail App Password → run `npm run dev` → send yourself a test email → run `npm run scan` → `workspace/email-digests/<timestamp>.md` appears with a categorized summary. If the test email is marked urgent, an alert appears in the Web UI chat.
+Configure your Gmail App Password → send yourself a test email → run `npm run scan` → `workspace/email-digests/<timestamp>.md` appears with a categorized summary.
 
 ## Prerequisites
 
 - Node 20+ (`node -v`)
 - An API key for one of: Anthropic, OpenAI, Google, Featherless
 - A Gmail account with 2FA enabled (for App Password generation)
-- ~20 minutes
 
 ## Setup
 
@@ -28,7 +27,6 @@ Configure your Gmail App Password → run `npm run dev` → send yourself a test
 npm install
 cp .env.example .env
 # edit .env: pick a provider, paste an API key, configure Gmail credentials
-npm run dev
 ```
 
 ### Gmail App Password
@@ -44,76 +42,66 @@ You need an App Password (not your regular Gmail password):
 
 ### First run
 
-First boot calls `openclaw init` under the hood, which scaffolds the canonical
-`SOUL.md`, `USER.md`, `MEMORY.md` into `workspace/` from the
-[official OpenClaw templates](https://github.com/openclaw/openclaw/tree/main/docs/reference/templates).
-
-Then add this skill's behavior on top:
-
-```bash
-cat skill-personality.snippet.md >> workspace/SOUL.md
-npm run reload
-```
-
-Open `http://localhost:3000`. The agent is now monitoring your inbox.
-
-To trigger a check manually (without waiting for the heartbeat):
+Send yourself a test email, wait a few seconds for delivery, then:
 
 ```bash
 npm run scan
 ```
 
-Send yourself a test email, wait a few seconds for delivery, then run `npm run scan`. A digest file appears in `workspace/email-digests/`.
+A digest file appears in `workspace/email-digests/`.
 
-## Files in this skill
+## Files in this project
 
 ```
 .
 ├── README.md                          this file
-├── package.json                       OpenClaw + Pi pinned deps
+├── package.json                       project deps (tsx, LLM SDKs, imapflow)
 ├── .env.example                       configuration template
-├── gateway.config.yaml                gateway config (heartbeat, channels, skill args)
-├── skill-personality.snippet.md       append to SOUL.md after init (skill rules)
+├── gateway.config.yaml                reference config for future OpenClaw integration
+├── skill-personality.snippet.md       personality rules (documentation)
+├── lib/
+│   └── llm.ts                         multi-provider LLM abstraction
 ├── workspace/
 │   ├── README.md                      explains what lives here + Gmail setup
 │   ├── email-digests/                 generated digests land here
 │   └── email-log.md                   created on first run; check history
-│   # SOUL.md, USER.md, MEMORY.md are scaffolded on first run from the
-│   # official OpenClaw templates — we don't ship copies, to avoid drift.
 └── skills/
-    └── email-monitor.ts               the monitoring skill itself
+    └── email-monitor.ts               the monitoring script
 ```
 
 ## How the monitor works (under the hood)
 
-The skill defined in `skills/email-monitor.ts`:
+The script in `skills/email-monitor.ts`:
 
-1. Connects to Gmail IMAP via `curl` with the App Password.
-2. Runs `SEARCH UNSEEN` to find unread message UIDs.
-3. Fetches headers (From, Subject, Date) and a body snippet for each (up to 20 most recent).
-4. Sends all email data to the model with a system prompt requesting:
+1. Connects to Gmail IMAP using the `imapflow` library with the App Password.
+2. Searches for unread messages in the INBOX.
+3. Fetches envelope data (From, Subject, Date) and a body snippet for each (up to 20 most recent).
+4. Sends all email data to the LLM with a system prompt requesting:
    - One-sentence summaries
    - Urgency classification (🔴 / 🟡 / 🟢)
    - Action items
 5. Writes the digest to `workspace/email-digests/<timestamp>.md`.
-6. If any 🔴 urgent emails are found, posts an immediate alert in chat.
+6. If any 🔴 urgent emails are found, highlights them in console output.
 7. Appends a log entry to `workspace/email-log.md`.
 
-The heartbeat (automatic checking) is configured in `gateway.config.yaml`:
+## Supported providers
 
-```yaml
-heartbeat:
-  interval_minutes: 5
-  skill: email-monitor
-```
+| Provider | Env var | Model example |
+|----------|---------|---------------|
+| Anthropic | `ANTHROPIC_API_KEY` | `claude-sonnet-4-6` |
+| OpenAI | `OPENAI_API_KEY` | `gpt-4o` |
+| Google | `GOOGLE_API_KEY` | `gemini-1.5-flash` |
+| Featherless | `FEATHERLESS_API_KEY` | `meta-llama/Meta-Llama-3.1-8B-Instruct` |
+
+Set `OPENCLAW_PROVIDER` and `OPENCLAW_MODEL` in `.env` to choose.
 
 ## Where to extend
 
-1. **Filter by sender/label.** Modify the IMAP SEARCH command to only check specific labels or senders (e.g., `SEARCH UNSEEN FROM "boss@company.com"`).
-2. **Add Telegram alerts for urgent.** Wire up Telegram via [../../guides/07-channels-messaging.md](../../guides/07-channels-messaging.md) so urgent emails ping your phone.
-3. **Auto-categorize with labels.** Extend the skill to suggest Gmail labels based on content (requires Gmail API for write access — IMAP is read-only here).
+1. **Filter by sender/label.** Modify the IMAP search query to only check specific labels or senders.
+2. **Schedule it.** Use cron on a VPS or your laptop to run `npm run scan` on an interval.
+3. **Auto-categorize with labels.** Extend the script to suggest Gmail labels based on content (requires Gmail API for write access — IMAP is read-only here).
 4. **Multi-account.** Run multiple instances with different `.env` files for personal + work inboxes.
-5. **Deploy to a VPS.** Once you trust the workflow, move it somewhere always-on — see [../../guides/04-deploy-vps-hostinger.md](../../guides/04-deploy-vps-hostinger.md).
+5. **OpenClaw integration.** When OpenClaw is available on npm, the `gateway.config.yaml` file documents how this skill plugs in — with heartbeat, channels, and Telegram notifications.
 
 ## Security notes
 
@@ -124,14 +112,7 @@ heartbeat:
 
 ## Troubleshooting
 
-- `IMAP connection failed` → check `EMAIL_USER` and `EMAIL_APP_PASSWORD`. Try: `curl -s --url "imaps://imap.gmail.com:993/INBOX" --user "you@gmail.com:your-app-password" --request "SEARCH UNSEEN"`
-- `No new unread emails` but you know there are some → Gmail may have marked them read. Star an email and use `SEARCH FLAGGED` to test.
+- `IMAP error` → check `EMAIL_USER` and `EMAIL_APP_PASSWORD` in `.env`.
+- `No new unread emails` but you know there are some → Gmail may have marked them read. Star an email or send a new one.
 - Digest is empty or malformed → the model may have struggled with the raw email format. Check `workspace/email-digests/` for the raw output.
-- Heartbeat doesn't fire on a laptop → laptops sleep. Use `npm run scan` manually, or deploy to a VPS.
-- More problems? → [../../guides/10-troubleshooting.md](../../guides/10-troubleshooting.md).
-
-## Stopping it
-
-```bash
-Ctrl-C in the npm run dev terminal
-```
+- LLM error → verify your API key is set and the provider/model are correct.

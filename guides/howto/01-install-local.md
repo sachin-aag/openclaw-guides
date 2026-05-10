@@ -1,4 +1,4 @@
-# 02 · Install on your laptop
+# 01 · Install on your laptop
 
 The fastest way to get a working OpenClaw agent. Best for hacking, fast iteration, and learning. **Not** the right place for an always-on production agent — your laptop sleeps.
 
@@ -21,12 +21,20 @@ If you don't have Node, install from [nodejs.org](https://nodejs.org) or via Hom
 
 ### 1. Clone a workflow starter
 
-For the workshop, start with the news briefing agent:
+Clone the repo once, then `cd` into the workshop track you want:
+
+| Track | Folder | What you build |
+|-------|--------|----------------|
+| **A — News briefing** | `workflows/news-briefing-agent` | RSS → daily markdown briefings in `workspace/briefings/` |
+| **B — Price monitor** | `workflows/price-monitor` | Watchlist → price checks, alerts, `workspace/price-log.md` |
+| **C — Email monitor** | `workflows/email-monitor` | Gmail (IMAP) → digests in `workspace/email-digests/`, urgent alerts |
 
 ```bash
 git clone https://github.com/creators-stuttgart/openclaw-guides
-cd openclaw-guides/workflows/news-briefing-agent
+cd openclaw-guides/workflows/news-briefing-agent   # or price-monitor / email-monitor
 ```
+
+Each track is a self-contained Node project — the steps below are the same after you pick a folder.
 
 ### 2. Install dependencies
 
@@ -49,6 +57,8 @@ Open `.env` in your editor and set at least:
 - The matching API key: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, or `FEATHERLESS_API_KEY`
 - `WORKSPACE_DIR` — folder the agent can write to (default: `./workspace`)
 
+**Track C (email-monitor)** also needs Gmail / IMAP variables from its `.env.example` (App Password, not your normal password). Tracks A and B only need the items above unless you add optional Telegram — see [05-channels-messaging.md](05-channels-messaging.md).
+
 ### 4. Run
 
 ```bash
@@ -63,7 +73,7 @@ You should see:
 [openclaw] agent loaded: SOUL.md, USER.md, MEMORY.md
 ```
 
-Open `http://localhost:3000`, send a message, watch a `notes/<today>.md` file appear in the workspace folder.
+Open `http://localhost:3000` and send a message. What lands on disk depends on the track — for example **Track A** writes `workspace/briefings/<today>.md` after you run a briefing; **B** and **C** log heartbeats to `workspace/price-log.md` and `workspace/email-log.md` respectively. See that track's `README.md` for the exact commands (`npm run briefing`, `npm run check`, `npm run scan`, etc.).
 
 ## Risks
 
@@ -97,7 +107,7 @@ Local OpenClaw doesn't ship with built-in rate limiting, request logging, or aut
 
 - Bind the gateway to `127.0.0.1` (default in our starter — verify in `.env`: `OPENCLAW_HOST=127.0.0.1`).
 - Don't expose the local port to the internet via tunnels (ngrok, Cloudflare Tunnel) without adding auth.
-- For anything beyond personal use, deploy to a VPS where you control the firewall — see [04-deploy-vps-hostinger.md](04-deploy-vps-hostinger.md).
+- For anything beyond personal use, deploy to a VPS where you control the firewall — see [03-deploy-vps-hostinger.md](03-deploy-vps-hostinger.md).
 
 ## Stopping and restarting
 
@@ -117,6 +127,6 @@ npm run reload
 
 ## Where to next
 
-- Hit a problem? [10-troubleshooting.md](10-troubleshooting.md)
-- Want it always-on? [04-deploy-vps-hostinger.md](04-deploy-vps-hostinger.md) or [05-deploy-vps-gcp.md](05-deploy-vps-gcp.md)
-- Want zero-install? [03-deploy-coral.md](03-deploy-coral.md)
+- Hit a problem? [06-troubleshooting.md](06-troubleshooting.md)
+- Want it always-on? [03-deploy-vps-hostinger.md](03-deploy-vps-hostinger.md) or [04-deploy-vps-gcp.md](04-deploy-vps-gcp.md)
+- Want zero-install? [02-deploy-coral.md](02-deploy-coral.md)

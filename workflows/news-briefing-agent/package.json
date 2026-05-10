@@ -1,24 +1,22 @@
 {
   "name": "openclaw-news-briefing-agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Workshop Track A — news briefing agent built on OpenClaw + Pi.",
+  "description": "Workshop Track A — standalone news briefing agent. Runs directly with tsx, no gateway required.",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "openclaw dev --config gateway.config.yaml",
-    "briefing": "openclaw skill run news-briefing",
-    "reload": "openclaw reload",
-    "lint": "echo 'TODO: add eslint when source grows'"
+    "briefing": "npx tsx skills/news-briefing.ts",
+    "dev": "npx tsx skills/news-briefing.ts"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@openclaw/cli": "^0.x",
-    "@openclaw/gateway": "^0.x",
-    "@mariozechner/pi-coding-agent": "^0.73.0",
-    "@mariozechner/pi-ai": "^0.73.0",
-    "dotenv": "^16.4.5"
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@google/generative-ai": "^0.24.0",
+    "dotenv": "^16.4.5",
+    "openai": "^4.85.0",
+    "tsx": "^4.19.0"
   }
 }

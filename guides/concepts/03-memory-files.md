@@ -1,4 +1,4 @@
-# 08 · Memory files — SOUL.md, USER.md, MEMORY.md
+# 03 · Memory files — SOUL.md, USER.md, MEMORY.md
 
 OpenClaw's memory is **plain markdown files on disk.** This is the part that makes builders smile when they first see it.
 
@@ -151,5 +151,5 @@ git diff HEAD~7
 
 ## Next
 
-- Wire memory to a heartbeat → [09-cron-and-heartbeat.md](09-cron-and-heartbeat.md)
-- See how Pi reads and writes these → [11-pi.md](11-pi.md)
+- Wire memory to a heartbeat → [04-cron-and-heartbeat.md](04-cron-and-heartbeat.md)
+- See how Pi reads and writes these → [05-pi.md](05-pi.md)

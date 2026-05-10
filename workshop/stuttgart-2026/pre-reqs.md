@@ -51,4 +51,4 @@
 
 - **Workshop Discord/Slack:** *(invite link printed on the cheatsheet given out at the door, or DM the organizers via the [Luma event](https://luma.com/cgq6d8j9))*
 - **OpenClaw docs:** [openclaw.cc](https://openclaw.cc) and [docs.openclaw.ai](https://docs.openclaw.ai)
-- **This repo:** clone it now and skim [`guides/02-install-local.md`](../../guides/02-install-local.md). 5 minutes.
+- **This repo:** clone it now and skim [`guides/howto/01-install-local.md`](../../guides/howto/01-install-local.md). 5 minutes.

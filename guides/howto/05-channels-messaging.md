@@ -1,4 +1,4 @@
-# 07 · Add a messaging channel
+# 05 · Add a messaging channel
 
 After the workshop, the most common follow-up question is "how do I talk to my agent from my phone?" Pick **one** channel; multi-channel can come later.
 
@@ -108,5 +108,5 @@ See each track's `.env.example` for the `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ALLOW
 
 ## Next
 
-- Tighten security before exposing your bot publicly → [02-install-local.md › Risks](02-install-local.md#risks)
-- Schedule the agent to message you on a heartbeat → [09-cron-and-heartbeat.md](09-cron-and-heartbeat.md)
+- Tighten security before exposing your bot publicly → [01-install-local.md › Risks](01-install-local.md#risks)
+- Schedule the agent to message you on a heartbeat → [04-cron-and-heartbeat.md](../concepts/04-cron-and-heartbeat.md)

@@ -12,19 +12,21 @@ Practical, opinionated guides for getting started with [OpenClaw](https://opencl
 .
 ├── blog/                          long-form posts
 │   └── getting-started-with-openclaw.md
-├── guides/                        bite-sized topic guides
-│   ├── 01-concepts.md             Core concepts (mirrors openclaw.cc)
-│   ├── 02-install-local.md        Install on your laptop (with risks)
-│   ├── 03-deploy-coral.md         Deploy on coral.inc (zero-setup)
-│   ├── 04-deploy-vps-hostinger.md Hostinger VPS, Docker, systemd
-│   ├── 05-deploy-vps-gcp.md       GCP Compute Engine + Secret Manager
-│   ├── 06-channels-web-ui.md      The Web UI channel
-│   ├── 07-channels-messaging.md   Telegram or Discord
-│   ├── 08-memory-files.md         SOUL.md, USER.md, MEMORY.md patterns
-│   ├── 09-cron-and-heartbeat.md   Always-on workflows
-│   ├── 10-troubleshooting.md      Common errors and fixes
-│   └── 11-pi.md                   The Pi coding agent embedded in OpenClaw
-├── workflows/                     starter projects
+├── guides/                        bite-sized topic guides, split by intent
+│   ├── concepts/                  what things are and how they fit together
+│   │   ├── 01-concepts.md             Core concepts (mirrors openclaw.cc)
+│   │   ├── 02-channels-web-ui.md      The Web UI channel
+│   │   ├── 03-memory-files.md         SOUL.md, USER.md, MEMORY.md patterns
+│   │   ├── 04-cron-and-heartbeat.md   Always-on workflows
+│   │   └── 05-pi.md                   The Pi coding agent embedded in OpenClaw
+│   └── howto/                     do this thing, in this order
+│       ├── 01-install-local.md        Install on your laptop (with risks)
+│       ├── 02-deploy-coral.md         Deploy on coral.inc (zero-setup)
+│       ├── 03-deploy-vps-hostinger.md Hostinger: 1-click managed, 1-click VPS, or manual KVM build
+│       ├── 04-deploy-vps-gcp.md       GCP Compute Engine + Secret Manager
+│       ├── 05-channels-messaging.md   Telegram or Discord
+│       └── 06-troubleshooting.md      Common errors and fixes
+├── workflows/                     standalone starter projects
 │   ├── news-briefing-agent/       Track A (beginner)
 │   ├── price-monitor/             Track B (intermediate)
 │   └── email-monitor/             Track C (advanced)
@@ -37,10 +39,10 @@ Practical, opinionated guides for getting started with [OpenClaw](https://opencl
 
 ## Quickstart (10 minutes)
 
-1. Read [guides/01-concepts.md](guides/01-concepts.md) — the mental model.
-2. Pick a deployment target — [local](guides/02-install-local.md), [coral.inc](guides/03-deploy-coral.md), or a [VPS](guides/04-deploy-vps-hostinger.md).
-3. Clone a workflow starter from [workflows/](workflows/) and follow its README.
-4. When stuck, check [guides/10-troubleshooting.md](guides/10-troubleshooting.md).
+1. Read [guides/concepts/01-concepts.md](guides/concepts/01-concepts.md) — the mental model.
+2. Pick a deployment target — [local](guides/howto/01-install-local.md), [coral.inc](guides/howto/02-deploy-coral.md), or [Hostinger](guides/howto/03-deploy-vps-hostinger.md) (managed → DIY VPS) / [GCP](guides/howto/04-deploy-vps-gcp.md).
+3. Clone a workflow starter from [workflows/](workflows/) and follow its README. Each track is a self-contained Node.js project — just `npm install`, configure `.env`, and run.
+4. When stuck, check [guides/howto/06-troubleshooting.md](guides/howto/06-troubleshooting.md).
 
 For the longer story, read the blog post: [Getting started with OpenClaw](blog/getting-started-with-openclaw.md).
 

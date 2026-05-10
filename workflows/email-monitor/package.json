@@ -1,23 +1,23 @@
 {
   "name": "openclaw-email-monitor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Workshop Track C — email monitoring agent built on OpenClaw + Pi.",
+  "description": "Workshop Track C — standalone email monitoring agent. Runs directly with tsx, no gateway required.",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "openclaw dev --config gateway.config.yaml",
-    "scan": "openclaw skill run email-monitor",
-    "reload": "openclaw reload"
+    "scan": "npx tsx skills/email-monitor.ts",
+    "dev": "npx tsx skills/email-monitor.ts"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@openclaw/cli": "^0.x",
-    "@openclaw/gateway": "^0.x",
-    "@mariozechner/pi-coding-agent": "^0.73.0",
-    "@mariozechner/pi-ai": "^0.73.0",
-    "dotenv": "^16.4.5"
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@google/generative-ai": "^0.24.0",
+    "dotenv": "^16.4.5",
+    "imapflow": "^1.0.171",
+    "openai": "^4.85.0",
+    "tsx": "^4.19.0"
   }
 }

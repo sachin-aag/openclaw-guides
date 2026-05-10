@@ -1,24 +1,22 @@
 # Track A · News Briefing Agent
 
-> An OpenClaw skill that fetches RSS feeds, generates a structured daily news briefing, and optionally sends it to Telegram. A real workflow you'd actually run every morning.
+> A standalone skill that fetches RSS feeds, generates a structured daily news briefing using an LLM, and saves it as markdown. A real workflow you'd actually run every morning.
 
 ## What it does
 
 - You configure RSS feed URLs in `workspace/feeds.txt`.
-- You trigger the briefing (manually for the workshop, on cron in production).
-- The agent fetches each feed, extracts recent articles, groups them by topic, and writes a structured briefing to `workspace/briefings/<today>.md`.
-- The agent confirms in chat with a 3-bullet TL;DR of the day's highlights.
-- If Telegram is configured, the summary lands in your Telegram chat too.
+- You run `npm run briefing`.
+- The script fetches each feed, sends the raw content to your chosen LLM, which extracts recent articles, groups them by topic, and produces a structured briefing.
+- The briefing is written to `workspace/briefings/<today>.md`.
 
 ## Definition of done (workshop bar)
 
-You run `npm run briefing`, a `workspace/briefings/<today>.md` appears with a structured news digest grouped by topic, and the agent posts a confirmation message in the Web UI.
+You run `npm run briefing`, a `workspace/briefings/<today>.md` appears with a structured news digest grouped by topic.
 
 ## Prerequisites
 
 - Node 20+ (`node -v`)
 - An API key for one of: Anthropic, OpenAI, Google, Featherless
-- ~10 minutes
 
 ## Setup
 
@@ -26,25 +24,6 @@ You run `npm run briefing`, a `workspace/briefings/<today>.md` appears with a st
 npm install
 cp .env.example .env
 # edit .env: pick a provider, paste an API key
-npm run dev
-```
-
-First boot calls `openclaw init` under the hood, which scaffolds the canonical
-`SOUL.md`, `USER.md`, `MEMORY.md` into `workspace/` from the
-[official OpenClaw templates](https://github.com/openclaw/openclaw/tree/main/docs/reference/templates).
-
-Then add this skill's behavior on top:
-
-```bash
-cat skill-personality.snippet.md >> workspace/SOUL.md
-npm run reload
-```
-
-Open `http://localhost:3000`. You can chat with the agent normally.
-
-In a second terminal, trigger the briefing:
-
-```bash
 npm run briefing
 ```
 
@@ -55,62 +34,56 @@ A briefing file appears in `workspace/briefings/`. Open it. You should see:
 - Each item as a one-line summary with a link
 - Any fetch errors noted at the bottom
 
-## Files in this skill
+## Files in this project
 
 ```
 .
 ├── README.md                          this file
-├── package.json                       OpenClaw + Pi pinned deps
+├── package.json                       project deps (tsx, LLM SDKs)
 ├── .env.example                       configuration template
-├── gateway.config.yaml                gateway config (cron, channels, skill args)
-├── skill-personality.snippet.md       append to SOUL.md after init (skill rules)
+├── gateway.config.yaml                reference config for future OpenClaw integration
+├── skill-personality.snippet.md       personality rules (documentation)
+├── lib/
+│   └── llm.ts                         multi-provider LLM abstraction
 ├── workspace/
 │   ├── README.md                      explains what lives here
 │   ├── feeds.txt                      RSS feed URLs (one per line)
 │   └── briefings/                     generated briefings land here
-│   # SOUL.md, USER.md, MEMORY.md are scaffolded on first run from the
-│   # official OpenClaw templates — we don't ship copies, to avoid drift.
 └── skills/
-    └── news-briefing.ts               the briefing skill itself
+    └── news-briefing.ts               the briefing script
 ```
 
 ## How the briefing works (under the hood)
 
-The skill defined in `skills/news-briefing.ts`:
+The script in `skills/news-briefing.ts`:
 
 1. Reads feed URLs from `workspace/feeds.txt`.
 2. Fetches each feed via `curl` (with a 15-second timeout per feed).
-3. Sends all raw XML content to the model with a system prompt requesting a structured briefing.
+3. Sends all raw XML content to the LLM with a system prompt requesting a structured briefing.
 4. The model extracts titles, links, descriptions; groups by topic; formats as markdown.
 5. Writes the result to `workspace/briefings/<YYYY-MM-DD>.md`.
-6. Posts a 3-bullet TL;DR in the chat channel.
 
-The schedule (when running on a VPS) lives in `gateway.config.yaml`:
+## Supported providers
 
-```yaml
-cron:
-  - name: morning-briefing
-    schedule: "30 7 * * *"
-    skill: news-briefing
-```
+| Provider | Env var | Model example |
+|----------|---------|---------------|
+| Anthropic | `ANTHROPIC_API_KEY` | `claude-sonnet-4-6` |
+| OpenAI | `OPENAI_API_KEY` | `gpt-4o` |
+| Google | `GOOGLE_API_KEY` | `gemini-1.5-flash` |
+| Featherless | `FEATHERLESS_API_KEY` | `meta-llama/Meta-Llama-3.1-8B-Instruct` |
+
+Set `OPENCLAW_PROVIDER` and `OPENCLAW_MODEL` in `.env` to choose.
 
 ## Where to extend
 
-1. **Add Telegram notifications.** Uncomment the Telegram channel in `gateway.config.yaml`, set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ALLOWED_USER_IDS` in `.env`, and change `notify: web` to `notify: telegram`. See [../../guides/07-channels-messaging.md](../../guides/07-channels-messaging.md).
-2. **Curate feeds by domain.** Add feeds for your specific interests — security advisories, job boards, niche subreddits, company blogs.
-3. **Weekly digest.** Add a second skill that reads all `briefings/*.md` from the past week and generates a "week in review" summary.
-4. **Deploy to a VPS.** Once you trust the workflow, move it somewhere always-on — see [../../guides/04-deploy-vps-hostinger.md](../../guides/04-deploy-vps-hostinger.md).
+1. **Curate feeds by domain.** Add feeds for your specific interests — security advisories, job boards, niche subreddits, company blogs.
+2. **Weekly digest.** Write a second script that reads all `briefings/*.md` from the past week and generates a "week in review" summary.
+3. **Schedule it.** Use cron on a VPS or your laptop to run `npm run briefing` every morning.
+4. **OpenClaw integration.** When OpenClaw is available on npm, the `gateway.config.yaml` file documents how this skill plugs in — with channels, cron scheduling, and Telegram notifications.
 
 ## Troubleshooting
 
-- `workspace/briefings/` is empty → the skill didn't run. Check that `npm run briefing` doesn't error.
-- Briefing has "Fetch errors" for all feeds → network issue. Try `curl -sL "https://hnrss.org/frontpage"` manually.
-- Agent replies "I cannot access that file" → `FEEDS_FILE` in `.env` is wrong. Should be `workspace/feeds.txt`.
-- Wrong tone / language → you edited `SOUL.md` but didn't `npm run reload`.
-- More problems? → [../../guides/10-troubleshooting.md](../../guides/10-troubleshooting.md).
-
-## Stopping it
-
-```bash
-Ctrl-C in the npm run dev terminal
-```
+- `workspace/briefings/` is empty — the script didn't run. Check that `npm run briefing` doesn't error.
+- Briefing has "Fetch errors" for all feeds — network issue. Try `curl -sL "https://hnrss.org/frontpage"` manually.
+- `FEEDS_FILE` not found — check your `.env` points to the right path (default: `workspace/feeds.txt`).
+- LLM error — verify your API key is set and the provider/model are correct.

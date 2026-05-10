@@ -44,16 +44,12 @@ npm install
 cp .env.example .env
 # add your model API key (Anthropic, OpenAI, Google, Featherless — pick one)
 
-npm run dev
-```
-
-You should see a local web UI on `http://localhost:3000`. You can chat with the agent normally. To trigger the briefing manually:
-
-```bash
 npm run briefing
 ```
 
 A new `workspace/briefings/<today>.md` appears with a structured news digest grouped by topic. That's your agent's output, in a file you can edit.
+
+Each workflow track runs standalone — no gateway required. The scripts use `tsx` to run TypeScript directly, and a `lib/llm.ts` abstraction handles multi-provider LLM calls.
 
 For step-by-step details and the other two workshop tracks, see [workflows/news-briefing-agent/README.md](../workflows/news-briefing-agent/README.md).
 
@@ -65,11 +61,11 @@ You have three realistic deployment targets. Pick based on what you're optimizin
 |---|---|---|---|---|
 | **Local laptop** | Hacking, fast iteration, editing memory files in your IDE | Free | No (laptop sleeps) | 10 min |
 | **[coral.inc](https://coral.inc)** | Zero install, demos, "I just want it to work" | Free tier, then usage-based | Yes | 5 min |
-| **VPS** ([Hostinger](../guides/04-deploy-vps-hostinger.md), [GCP](../guides/05-deploy-vps-gcp.md)) | Always-on cron, real users, your own infra | ~€5–15/mo | Yes | 30–60 min |
+| **VPS** ([Hostinger](../guides/howto/03-deploy-vps-hostinger.md), [GCP](../guides/howto/04-deploy-vps-gcp.md)) | Always-on cron, real users, your own infra | ~€5–15/mo | Yes | 30–60 min |
 
 Most people start local, prove the workflow they care about, then move to a VPS once cron actually matters.
 
-> ⚠ **Risk callout for local:** OpenClaw gives the agent a `Bash` tool. That means an LLM, with your API key, can run shell commands on your machine. Treat your `SOUL.md` and tool policy like security boundaries. See [02-install-local.md › Risks](../guides/02-install-local.md#risks).
+> ⚠ **Risk callout for local:** OpenClaw gives the agent a `Bash` tool. That means an LLM, with your API key, can run shell commands on your machine. Treat your `SOUL.md` and tool policy like security boundaries. See [howto/01-install-local.md › Risks](../guides/howto/01-install-local.md#risks).
 
 ## Memory as markdown — why this changes how you build with agents
 
@@ -88,7 +84,7 @@ This makes three things possible that vector-DB agents struggle with:
 2. **Edit.** You don't "retrain" or "re-embed" — you open the file.
 3. **Version.** Commit it. Branch it. Roll back if the agent develops a weird habit.
 
-For real-world authoring patterns, see [guides/08-memory-files.md](../guides/08-memory-files.md).
+For real-world authoring patterns, see [guides/concepts/03-memory-files.md](../guides/concepts/03-memory-files.md).
 
 ## Pi as the coding brain
 
@@ -105,23 +101,22 @@ Bash(cmd)             // run anything in a shell
 
 That's why an OpenClaw agent can write to `MEMORY.md`, run a Python script, check git status, or compose an email — without you wiring up custom tooling. The agent is, functionally, a junior dev with shell access and a markdown notebook.
 
-For a deeper dive into how Pi is wired into OpenClaw, see [guides/11-pi.md](../guides/11-pi.md).
+For a deeper dive into how Pi is wired into OpenClaw, see [guides/concepts/05-pi.md](../guides/concepts/05-pi.md).
 
 ## Common pitfalls and how to avoid them
 
-These are the issues we expect to hit at the workshop. The full list is in [guides/10-troubleshooting.md](../guides/10-troubleshooting.md).
+These are the issues we expect to hit at the workshop. The full list is in [guides/howto/06-troubleshooting.md](../guides/howto/06-troubleshooting.md).
 
-- **`Cannot find module '@mariozechner/pi-coding-agent'`** → run `npm install` in the workflow folder, not the repo root.
-- **Agent replies but doesn't write the markdown file** → check that `WORKSPACE_DIR` in `.env` points to a folder the process can write to.
-- **API key errors with no other context** → most providers throw 401 as 500. Verify the key is exported in the same shell that runs `npm run dev`.
+- **`Cannot find module …`** → run `npm install` in the workflow folder, not the repo root.
+- **Script runs but doesn't write the output file** → check that the output directory path in `.env` is correct and writable.
+- **API key errors with no other context** → most providers throw 401 as 500. Verify the key is set in `.env` for the matching `OPENCLAW_PROVIDER`.
 - **Cron doesn't fire on my laptop** → laptops sleep. Either keep the lid open with caffeine on macOS (`caffeinate -i`), or move to a VPS.
-- **The agent's tone is wrong** → you edited `SOUL.md` but didn't restart the gateway. Restart, or use `npm run reload`.
 
 ## Where to go next
 
 You've got a daily review agent running. From here, the natural next steps:
 
-- **Add a second channel.** Wire up Telegram or Discord so you can talk to your agent from your phone — see [guides/07-channels-messaging.md](../guides/07-channels-messaging.md).
+- **Add a second channel.** Wire up Telegram or Discord so you can talk to your agent from your phone — see [guides/howto/05-channels-messaging.md](../guides/howto/05-channels-messaging.md).
 - **Multi-agent routing.** Run two agents (a "researcher" and a "writer") that hand work to each other.
 - **Hybrid model routing.** Use a cheap model for routing and an expensive one for thinking. This is configured in OpenClaw's model registry.
 - **Skills.** Package a workflow as a reusable [Skill](https://github.com/openclaw/openclaw/tree/main/docs) so other agents can invoke it.

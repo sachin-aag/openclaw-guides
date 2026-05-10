@@ -50,7 +50,7 @@ The L2 move is the single most important rule. **Better that someone runs an age
 6. **Cron / heartbeat doesn't fire on a laptop** → laptops sleep. For the workshop, use manual `npm run briefing` / `npm run check` / `npm run scan` instead.
 7. **Windows-specific issues** → push them to WSL2 if they're not already; otherwise straight to coral.inc.
 
-Full reference: [`guides/10-troubleshooting.md`](../../guides/10-troubleshooting.md). Read it once before doors.
+Full reference: [`guides/howto/06-troubleshooting.md`](../../guides/howto/06-troubleshooting.md). Read it once before doors.
 
 ---
 
@@ -67,7 +67,7 @@ Full reference: [`guides/10-troubleshooting.md`](../../guides/10-troubleshooting
 ## Things to **not** do
 
 - **Don't refactor their code.** They want to learn, not watch you type.
-- **Don't lecture about OpenClaw architecture.** That's the impulse's job. If they ask, point at the slide deck or the [`01-concepts.md`](../../guides/01-concepts.md) link.
+- **Don't lecture about OpenClaw architecture.** That's the impulse's job. If they ask, point at the slide deck or the [`concepts/01-concepts.md`](../../guides/concepts/01-concepts.md) link.
 - **Don't get pulled into "what about LangGraph / CrewAI / AutoGen?"** Smile, say "great Showcase question, ask after 18:00," move on.
 - **Don't fix things alone.** Always pair — that's the learning moment.
 

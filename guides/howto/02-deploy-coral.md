@@ -1,4 +1,4 @@
-# 03 · Deploy on coral.inc
+# 02 · Deploy on coral.inc
 
 Zero install. Everything in the browser. The fastest path from "never used OpenClaw" to "I have an agent running."
 
@@ -58,7 +58,7 @@ Everything in OpenClaw is portable. Use the dashboard's **Export** button to dow
 - Session JSONLs
 - Skill configs
 
-Drop them into a fresh local install ([02-install-local.md](02-install-local.md)) or a VPS install ([04-deploy-vps-hostinger.md](04-deploy-vps-hostinger.md)) and continue.
+Drop them into a fresh local install ([01-install-local.md](01-install-local.md)) or a VPS install ([03-deploy-vps-hostinger.md](03-deploy-vps-hostinger.md)) and continue.
 
 ## Workshop tip
 

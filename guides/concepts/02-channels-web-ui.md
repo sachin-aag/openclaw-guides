@@ -1,4 +1,4 @@
-# 06 · The Web UI channel
+# 02 · The Web UI channel
 
 The Web UI is the simplest channel and the one we use throughout the workshop. A browser tab talks to your local (or hosted) Gateway over HTTP.
 
@@ -43,4 +43,4 @@ Keep the chat UI open in one browser tab and `tail -f sessions/*.jsonl` in a ter
 
 ## Next
 
-- Add a phone-friendly channel → [07-channels-messaging.md](07-channels-messaging.md)
+- Add a phone-friendly channel → [05-channels-messaging.md](../howto/05-channels-messaging.md)

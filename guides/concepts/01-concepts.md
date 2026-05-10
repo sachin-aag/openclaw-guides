@@ -30,13 +30,13 @@ How the outside world reaches your agent. OpenClaw supports several out of the b
 - **CLI** — pipe text in, pipe text out. Scriptable.
 - **Telegram, Slack, Discord, WhatsApp** — messaging-app channels via the official plugins.
 
-For the workshop we use only the Web UI to keep setup simple. To add a messaging channel later, see [07-channels-messaging.md](07-channels-messaging.md).
+For the workshop we use only the Web UI to keep setup simple. To add a messaging channel later, see [05-channels-messaging.md](../howto/05-channels-messaging.md).
 
 ### Agents
 
 The AI entity that processes messages. OpenClaw embeds [**Pi**](https://docs.openclaw.ai/pi) — an open-source coding agent — by default. You can configure multiple agents per gateway and route between them.
 
-For more on Pi specifically, see [11-pi.md](11-pi.md).
+For more on Pi specifically, see [05-pi.md](05-pi.md).
 
 ### Sessions
 
@@ -52,7 +52,7 @@ Sessions are stored as JSONL files on disk (one event per line). You can `tail -
 
 Long-term knowledge that survives across sessions. In OpenClaw, memory is **plain markdown files** — by convention `SOUL.md`, `USER.md`, `MEMORY.md`, and any `notes/*.md` you add. The official `SOUL.md` template lives at [openclaw/openclaw › docs/reference/templates/SOUL.md](https://github.com/openclaw/openclaw/blob/main/docs/reference/templates/SOUL.md).
 
-For authoring patterns, see [08-memory-files.md](08-memory-files.md).
+For authoring patterns, see [03-memory-files.md](03-memory-files.md).
 
 ## Two more concepts worth knowing
 

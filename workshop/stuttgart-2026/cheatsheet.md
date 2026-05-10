@@ -6,7 +6,7 @@
 
 ## Today's success criterion
 
-> **Send a message → OpenClaw writes a markdown file → confirmation appears in chat.**
+> **Run a script → it fetches data, sends it to an LLM, and writes a markdown file.**
 > That's it. Anything beyond is bonus.
 
 ---
@@ -28,17 +28,20 @@ git clone https://github.com/creators-stuttgart/openclaw-guides
 cd openclaw-guides/workflows/<your-track>      # news-briefing-agent | price-monitor | email-monitor
 npm install
 cp .env.example .env       # paste your API key in the file
-npm run dev
 ```
 
-Then in the same folder:
+Then run your track's script:
 
 ```bash
-cat skill-personality.snippet.md >> workspace/SOUL.md
-npm run reload
-```
+# Track A:
+npm run briefing
 
-Open **http://localhost:3000** and start chatting.
+# Track B:
+npm run check
+
+# Track C (needs Gmail App Password in .env first):
+npm run scan
+```
 
 ---
 
@@ -59,10 +62,10 @@ Open **http://localhost:3000** and start chatting.
 | `Cannot find module …` | You're in the wrong folder. `cd workflows/<track>/` first. |
 | `EACCES` on npm | `sudo chown -R $(whoami) ~/.npm ./node_modules` |
 | `401 Unauthorized` | API key isn't loaded. Re-source `.env` or restart the terminal. |
-| Agent replies but no file appears | `WORKSPACE_DIR` in `.env` is wrong. Should be `./workspace`. |
-| Wrong tone / language | You edited `SOUL.md` but didn't `npm run reload`. |
+| Agent replies but no file appears | Check the output directory in `.env` exists. |
+| LLM error / 401 | API key isn't loaded. Check `.env` has the right key for your provider. |
 
-Full troubleshooting: [`guides/10-troubleshooting.md`](../../guides/10-troubleshooting.md)
+Full troubleshooting: [`guides/howto/06-troubleshooting.md`](../../guides/howto/06-troubleshooting.md)
 
 ---
 

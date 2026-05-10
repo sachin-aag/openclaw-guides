@@ -1,4 +1,4 @@
-# 09 · Cron and the heartbeat
+# 04 · Cron and the heartbeat
 
 Always-on is the OpenClaw feature that surprises people. Your agent isn't waiting for you to ping it — it can wake up, do work, and message you first.
 
@@ -57,7 +57,7 @@ Three options:
 
 1. **Workshop hack:** trigger manually with `npm run review` instead of relying on cron.
 2. **Stay awake on macOS:** `caffeinate -i npm run dev`.
-3. **Move to a VPS:** [04-deploy-vps-hostinger.md](04-deploy-vps-hostinger.md). This is the right answer for anything you actually want to keep using.
+3. **Move to a VPS:** [03-deploy-vps-hostinger.md](../howto/03-deploy-vps-hostinger.md). This is the right answer for anything you actually want to keep using.
 
 ## A canonical always-on workflow: the daily review agent
 
@@ -119,4 +119,4 @@ briefing-1715234400.md       # bad — every run = new file
 ## Next
 
 - Build the news-briefing skill end-to-end → [../workflows/news-briefing-agent/README.md](../workflows/news-briefing-agent/README.md)
-- Things firing twice or not at all → [10-troubleshooting.md › Cron](10-troubleshooting.md#cron-issues)
+- Things firing twice or not at all → [06-troubleshooting.md › Cron](../howto/06-troubleshooting.md#cron-issues)

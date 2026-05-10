@@ -7,7 +7,7 @@ Thanks for wanting to add to this. Three things to know.
 - **New deployment guides** — any provider you've actually shipped to, with concrete steps and gotchas you hit.
 - **New workflow starters** — small, focused, beginner-runnable in under 30 minutes.
 - **Fixes and clarifications** to existing guides — typos, broken links, outdated commands, better error messages.
-- **Translations** — start with the blog post and `guides/01-concepts.md`. Open an issue first so we don't duplicate work.
+- **Translations** — start with the blog post and `guides/concepts/01-concepts.md`. Open an issue first so we don't duplicate work.
 
 ## What we don't accept
 

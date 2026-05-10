@@ -1,4 +1,4 @@
-# 05 · Deploy on Google Cloud (Compute Engine)
+# 04 · Deploy on Google Cloud (Compute Engine)
 
 GCP is the right call if you already use Google Cloud, want IAM/Secret Manager integration, or want to start on the [free tier](https://cloud.google.com/free) `e2-micro` instance.
 
@@ -185,6 +185,6 @@ sudo systemctl enable --now openclaw
 
 ## Where to next
 
-- Hostinger if you want EU + cheaper → [04-deploy-vps-hostinger.md](04-deploy-vps-hostinger.md)
-- Add cron heartbeats → [09-cron-and-heartbeat.md](09-cron-and-heartbeat.md)
-- Production checklist → [10-troubleshooting.md](10-troubleshooting.md)
+- Hostinger if you want EU + cheaper → [03-deploy-vps-hostinger.md](03-deploy-vps-hostinger.md)
+- Add cron heartbeats → [04-cron-and-heartbeat.md](../concepts/04-cron-and-heartbeat.md)
+- Production checklist → [06-troubleshooting.md](06-troubleshooting.md)

@@ -1,3 +1,9 @@
+# ──────────────────────────────────────────────────────────────────
+# REFERENCE ONLY — this file is not used by the standalone version.
+# It documents how this skill plugs into the OpenClaw gateway when
+# @openclaw/gateway is available on npm.
+# ──────────────────────────────────────────────────────────────────
+#
 # Gateway config for the Price Monitor
 # See https://docs.openclaw.ai for the full reference.
 
