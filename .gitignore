@@ -51,3 +51,6 @@ workflows/**/workspace/summaries/
 
 # But keep the workspace/README.md that explains what gets scaffolded.
 !workflows/**/workspace/README.md
+
+# Slides for events that aren't ready to publish
+slides/openclaw-heidelberg/

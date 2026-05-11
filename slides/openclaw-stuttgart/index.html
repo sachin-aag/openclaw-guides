@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OpenClaw Hands-On · Stuttgart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600&display=swap"/>
+<style>
+/* === VIEWPORT BASE (mandatory, from frontend-slides skill) === */
+html, body { height: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.slide-content {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  max-height: 100%; overflow: hidden;
+  padding: var(--slide-padding);
+}
+:root {
+  --title-size: clamp(1.5rem, 5vw, 4rem);
+  --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+  --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+  --body-size: clamp(0.8rem, 1.5vw, 1.15rem);
+  --small-size: clamp(0.7rem, 1vw, 0.9rem);
+  --slide-padding: clamp(2rem, 5vw, 5rem);
+  --content-gap: clamp(0.75rem, 2vw, 2rem);
+  --element-gap: clamp(0.4rem, 1vw, 1rem);
+
+  /* === THEME === */
+  --bg: #0b0b0e;
+  --bg-soft: #15151a;
+  --fg: #f4ede1;
+  --fg-dim: rgba(244, 237, 225, 0.62);
+  --fg-faint: rgba(244, 237, 225, 0.30);
+  --accent: #ff6b35;          /* lobster orange — claw */
+  --accent-soft: #ff8f5e;
+  --line: rgba(244, 237, 225, 0.12);
+  --code-bg: rgba(244, 237, 225, 0.05);
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+}
+.card, .container, .content-box {
+  max-width: min(92vw, 1100px);
+  max-height: min(80vh, 700px);
+}
+img, .image-container { max-width: 100%; max-height: min(50vh, 400px); object-fit: contain; }
+@media (max-height: 700px) { :root { --slide-padding: clamp(1rem, 3vw, 2.5rem); --title-size: clamp(1.25rem, 4.5vw, 2.75rem); --h2-size: clamp(1rem, 3vw, 1.75rem); } }
+@media (max-height: 600px) { :root { --slide-padding: clamp(0.75rem, 2.5vw, 1.5rem); --title-size: clamp(1.1rem, 4vw, 2rem); --body-size: clamp(0.7rem, 1.2vw, 0.95rem); } .nav-dots, .keyboard-hint, .decorative { display: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } html { scroll-behavior: auto; } }
+
+/* === GLOBAL === */
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--sans);
+  font-size: var(--body-size);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+}
+h1, h2, h3 { font-family: var(--serif); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+h1 { font-size: var(--title-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+p { margin: 0; line-height: 1.5; }
+code, .mono { font-family: var(--mono); font-size: 0.92em; }
+.kicker {
+  font-family: var(--mono); font-size: var(--small-size);
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--accent); margin-bottom: var(--element-gap);
+}
+.dim { color: var(--fg-dim); }
+.faint { color: var(--fg-faint); }
+.accent { color: var(--accent); }
+.serif { font-family: var(--serif); }
+
+/* Subtle film-grain background overlay */
+.slide::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(1200px 600px at 100% 0%, rgba(255, 107, 53, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(255, 107, 53, 0.04), transparent 60%);
+  z-index: 0;
+}
+.slide-content { position: relative; z-index: 1; }
+
+/* Slide number + section label */
+.slide-meta {
+  position: absolute; bottom: clamp(0.75rem, 2vh, 1.5rem); left: var(--slide-padding); right: var(--slide-padding);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: var(--small-size);
+  color: var(--fg-faint);
+  z-index: 2;
+}
+.slide-meta .num::before { content: "—"; margin-right: 0.5em; }
+
+/* Layout helpers */
+.row { display: flex; gap: var(--content-gap); align-items: center; }
+.col { display: flex; flex-direction: column; gap: var(--element-gap); }
+.between { justify-content: space-between; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--content-gap); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--content-gap); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--content-gap); }
+@media (max-width: 700px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+/* Cards */
+.tile {
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  border-radius: 6px;
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.tile h3 { font-family: var(--sans); font-size: var(--h3-size); font-weight: 600; letter-spacing: -0.01em; }
+.tile .num {
+  font-family: var(--mono); font-size: var(--small-size);
+  color: var(--accent); letter-spacing: 0.12em;
+}
+.tile p { font-size: var(--body-size); color: var(--fg-dim); }
+
+/* Bullet list */
+.feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: clamp(0.5rem, 1.5vh, 1rem); }
+.feature-list li {
+  font-size: var(--body-size); line-height: 1.5; padding-left: 2.2em;
+  position: relative;
+}
+.feature-list li::before {
+  content: ""; position: absolute; left: 0; top: 0.65em;
+  width: 1.5em; height: 1px; background: var(--accent);
+}
+
+/* Tags */
+.tag {
+  display: inline-block; padding: 0.18em 0.55em;
+  border: 1px solid var(--line); border-radius: 999px;
+  font-family: var(--mono); font-size: var(--small-size);
+  color: var(--fg-dim);
+}
+.tag.hot { color: var(--accent); border-color: var(--accent); }
+
+/* Code block */
+pre.code {
+  font-family: var(--mono); font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px;
+  padding: 1rem 1.25rem; margin: 0; overflow-x: auto;
+  color: var(--fg); line-height: 1.55;
+  white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;
+}
+.code .c { color: var(--fg-faint); }
+.code .k { color: var(--accent-soft); }
+.code .s { color: #c1d8b9; }
+.code .v { color: #f5d18a; }
+
+/* Big stat */
+.bigstat { font-family: var(--serif); font-weight: 900; font-size: clamp(3rem, 12vw, 9rem); line-height: 0.9; letter-spacing: -0.04em; }
+.bigstat .accent { color: var(--accent); }
+
+/* Title slide ornament */
+.glyph {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  color: var(--accent); font-size: 1.2em;
+}
+
+/* Architecture image */
+.arch { color: var(--fg); width: 100%; max-width: min(95vw, 1100px); max-height: 55vh; }
+
+/* Slide 19 — break → showcase (horizontal rhythm) */
+.bridge-wrap { width: 100%; max-width: min(96vw, 1160px); }
+.bridge-rail {
+  display: flex; align-items: stretch; width: 100%;
+  margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  background: var(--bg-soft);
+}
+.bridge-seg {
+  flex: 1; padding: 0.55rem 0.85rem; text-align: center;
+  font-family: var(--mono); font-size: var(--small-size); line-height: 1.35;
+  border-right: 1px solid var(--line);
+  color: var(--fg-dim);
+}
+.bridge-seg:last-child { border-right: none; }
+.bridge-seg strong { color: var(--accent); font-weight: 700; display: block; margin-bottom: 0.15em; }
+.bridge-panels {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--content-gap);
+  align-items: stretch;
+}
+.bridge-panel {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: clamp(1rem, 2.2vw, 1.45rem);
+  display: flex; flex-direction: column; gap: 0.55rem;
+  min-height: 0;
+}
+.bridge-panel .bridge-time {
+  font-family: var(--mono); font-size: var(--small-size);
+  color: var(--accent); letter-spacing: 0.1em;
+}
+.bridge-panel h3 {
+  font-family: var(--sans); font-size: var(--h3-size); font-weight: 700;
+  letter-spacing: -0.02em; margin: 0; color: var(--fg);
+}
+.bridge-panel p { font-size: var(--body-size); color: var(--fg-dim); line-height: 1.52; margin: 0; }
+.bridge-foot {
+  margin-top: var(--content-gap);
+  padding: 0.7rem 1rem 0.7rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(255, 107, 53, 0.07);
+  border-radius: 0 6px 6px 0;
+  font-size: var(--small-size);
+  color: var(--fg-dim); line-height: 1.45;
+}
+.bridge-tagline {
+  margin-top: var(--content-gap);
+  text-align: center;
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  color: var(--fg-dim);
+}
+@media (max-width: 760px) {
+  .bridge-rail { flex-direction: column; }
+  .bridge-seg { border-right: none; border-bottom: 1px solid var(--line); }
+  .bridge-seg:last-child { border-bottom: none; }
+  .bridge-panels { grid-template-columns: 1fr; }
+}
+
+/* Reveal animation */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.2,.7,.2,1); }
+.slide.in-view .reveal { opacity: 1; transform: none; }
+.slide.in-view .reveal.d1 { transition-delay: 0.08s; }
+.slide.in-view .reveal.d2 { transition-delay: 0.18s; }
+.slide.in-view .reveal.d3 { transition-delay: 0.28s; }
+.slide.in-view .reveal.d4 { transition-delay: 0.38s; }
+.slide.in-view .reveal.d5 { transition-delay: 0.48s; }
+.slide.in-view .reveal.d6 { transition-delay: 0.58s; }
+
+/* Right-edge nav dots */
+.nav-dots {
+  position: fixed; right: clamp(0.6rem, 1.4vw, 1.2rem); top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 0.45rem;
+  z-index: 50;
+}
+.nav-dots a {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--fg-faint); transition: background 0.2s;
+}
+.nav-dots a.active { background: var(--accent); }
+.nav-dots a:hover { background: var(--fg); }
+
+/* Keyboard hint */
+.keyboard-hint {
+  position: fixed; bottom: clamp(0.5rem, 1.5vh, 1rem); right: clamp(0.6rem, 1.4vw, 1.2rem);
+  font-family: var(--mono); font-size: var(--small-size); color: var(--fg-faint);
+  z-index: 50;
+}
+
+/* Title slide */
+.title-slide .slide-content { justify-content: space-between; padding-top: clamp(2rem, 6vh, 4rem); padding-bottom: clamp(2rem, 6vh, 4rem); }
+.title-mark {
+  font-family: var(--mono); font-size: var(--small-size); color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.22em;
+}
+.title-slide h1 {
+  font-size: clamp(2.5rem, 9vw, 7.5rem);
+  font-weight: 900; line-height: 0.95;
+}
+.title-slide .sub { font-family: var(--serif); font-style: italic; font-size: clamp(1.2rem, 3vw, 2.4rem); color: var(--fg-dim); }
+.title-foot { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; }
+.title-foot .hosts { font-family: var(--mono); font-size: var(--small-size); color: var(--fg-dim); line-height: 1.7; }
+.title-foot .when { font-family: var(--mono); font-size: var(--small-size); color: var(--fg-faint); text-align: right; }
+
+/* QR slide */
+.qr-box {
+  width: clamp(180px, 28vw, 280px); height: clamp(180px, 28vw, 280px);
+  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: var(--small-size); color: var(--fg-faint);
+  background: repeating-linear-gradient(45deg, var(--bg-soft) 0 6px, transparent 6px 12px);
+  border-radius: 6px;
+}
+
+/* Demo placeholder */
+.demo-frame {
+  border: 1px dashed var(--accent); border-radius: 8px;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  min-height: 30vh;
+}
+.demo-frame .pulse {
+  width: 12px; height: 12px; border-radius: 999px; background: var(--accent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* Comparison table */
+table.cmp { width: 100%; border-collapse: collapse; font-size: var(--body-size); }
+table.cmp th, table.cmp td {
+  text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+table.cmp th { font-family: var(--mono); font-size: var(--small-size); text-transform: uppercase; letter-spacing: 0.15em; color: var(--fg-faint); font-weight: 500; }
+table.cmp td.label { font-family: var(--mono); color: var(--fg-dim); font-size: var(--small-size); }
+
+/* File tree */
+.tree {
+  font-family: var(--mono); font-size: clamp(0.8rem, 1.2vw, 1rem); line-height: 1.6;
+  color: var(--fg-dim); white-space: pre;
+}
+.tree .a { color: var(--accent); }
+.tree .f { color: var(--fg); }
+
+/* Volunteer zones map */
+.room {
+  border: 1px solid var(--line); border-radius: 8px;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
+  gap: 4px; padding: 4px; background: var(--bg-soft);
+  width: 100%; max-width: 720px; aspect-ratio: 16 / 9;
+}
+.room .zone {
+  border: 1px dashed var(--line); border-radius: 4px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: var(--small-size); color: var(--fg-dim); padding: 0.5rem; text-align: center;
+}
+.room .zone strong { color: var(--accent); display: block; font-size: 1.1em; margin-bottom: 0.2em; }
+.room .zone.bar { background: rgba(255, 107, 53, 0.08); border-color: var(--accent); color: var(--accent); }
+
+/* Stage area at the front of the room */
+.stage { grid-column: 1 / -1; background: var(--bg); color: var(--fg-faint); font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SLIDE 01 — TITLE
+     ============================================================ -->
+<section class="slide title-slide" id="s1">
+  <div class="slide-content">
+    <div class="title-mark reveal">OpenClaw &nbsp;·&nbsp; Hands-On &nbsp;·&nbsp; Stuttgart</div>
+    <div class="col" style="gap: clamp(0.75rem, 2vh, 1.5rem);">
+      <h1 class="reveal d1">Build a real <span class="glyph">claw</span><br/>before the break.</h1>
+      <p class="sub reveal d2">A workshop for builders. Bring a laptop. Leave with a working agent.</p>
+    </div>
+    <div class="title-foot reveal d3">
+      <div class="hosts">
+        Hosted by<br/>
+        <span style="color: var(--fg);">KI-Bundesverband · Startup Stuttgart · Creators</span>
+      </div>
+      <div class="when">
+        Frameworx, Stuttgart Mitte<br/>
+        16:00 — 17:40 · Hands-On &nbsp;·&nbsp; 17:40 — 18:00 break<br/>
+        18:00 — 20:00 · OpenClaw Showcase
+      </div>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">01 / 18</span><span>OpenClaw Hands-On Stuttgart</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 02 — WHAT YOU'LL WALK AWAY WITH (success criteria)
+     ============================================================ -->
+<section class="slide" id="s2">
+  <div class="slide-content">
+    <div class="kicker reveal">By 17:40</div>
+    <h2 class="reveal d1">You will walk away with a real, running OpenClaw skill.</h2>
+    <div class="reveal d2" style="margin-top: var(--content-gap); border-left: 3px solid var(--accent); padding-left: clamp(1rem, 2vw, 1.5rem);">
+      <p style="font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.7rem); color: var(--fg); line-height: 1.4;">
+        “We send a message, OpenClaw writes or updates a markdown file, and confirms it back in chat.”
+      </p>
+      <p class="dim" style="margin-top: 0.6rem; font-size: var(--small-size);">— that's the bar. Tangible. Hackable. Yours to extend.</p>
+    </div>
+    <p class="reveal d3 dim" style="margin-top: var(--content-gap); font-size: var(--small-size);">
+      No prior OpenClaw experience required. Curiosity is enough.
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">02 / 18</span><span>Outcome</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 03 — AGENDA
+     ============================================================ -->
+<section class="slide" id="s3">
+  <div class="slide-content">
+    <div class="kicker reveal">Today</div>
+    <h2 class="reveal d1">Build hard. Go quiet. Then turn the lights up.</h2>
+    <div class="col reveal d2" style="margin-top: var(--content-gap); gap: 0;">
+      <div class="row" style="border-top: 1px solid var(--line); padding: 1rem 0; gap: 2rem;">
+        <span class="mono accent" style="min-width: 11ch;">16:00 — 16:30</span>
+        <span style="flex: 1;"><strong>Impulse + live demo.</strong> The mental model in one breath, then watch something real do message → markdown → reply.</span>
+      </div>
+      <div class="row" style="border-top: 1px solid var(--line); padding: 1rem 0; gap: 2rem;">
+        <span class="mono accent" style="min-width: 11ch;">16:30 — 17:40</span>
+        <span style="flex: 1;"><strong>Hands-on build.</strong> Pairs or trios: pick a track, hit the success bar, flag down a volunteer when you're rubber-ducking air.</span>
+      </div>
+      <div class="row" style="border-top: 1px solid var(--line); padding: 1rem 0; gap: 2rem;">
+        <span class="mono accent" style="min-width: 11ch;">17:40 — 18:00</span>
+        <span style="flex: 1;"><strong>Break — by design.</strong> Caffeine, bio break, stretch the shoulders that carried that bug for forty minutes. No agenda except leaving the build headspace.</span>
+      </div>
+      <div class="row" style="border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1rem 0; gap: 2rem;">
+        <span class="mono accent" style="min-width: 11ch;">18:00 — 20:00</span>
+        <span style="flex: 1;"><strong>OpenClaw Showcase.</strong> A proper lineup of planned demos—plus honest empty slots on the sheet for anyone who wants the mic: "here's the weird little thing I got running today." Equal parts premiere night and friendly show-and-tell.</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">03 / 18</span><span>Agenda</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 04 — USE CASES (stories that stuck)
+     ============================================================ -->
+<section class="slide" id="s4">
+  <div class="slide-content">
+    <div class="kicker reveal">Why this matters</div>
+    <h2 class="reveal d1">Four stories that stuck.</h2>
+    <div class="grid-2 reveal d2" style="margin-top: var(--content-gap);">
+      <div class="tile">
+        <span class="num">Story 01</span>
+        <h3>The health coach you never hired</h3>
+        <p>Nat Friedman's claw spotted dehydration on the webcam mid-drive, flagged low magnesium, and rerouted the Tesla to the nearest store.</p>
+      </div>
+      <div class="tile">
+        <span class="num">Story 02</span>
+        <h3>The claims dept. that fights back</h3>
+        <p>Lemonade rejected a claim. The user's claw read the case, drafted a legal rebuttal, sent it. Claim reopened. They won.</p>
+      </div>
+      <div class="tile">
+        <span class="num">Story 03</span>
+        <h3>The assistant that doesn't give up</h3>
+        <p>Restaurant fully booked online. The claw spun up a voice caller, phoned the venue, snagged a last-minute cancellation.</p>
+      </div>
+      <div class="tile" style="border-color: var(--accent); background: rgba(255, 107, 53, 0.07);">
+        <span class="num">Story 04 · cautionary</span>
+        <h3>The inbox that got compacted</h3>
+        <p>A Meta engineer's claw summarized months of email into three bullets — and deleted the originals. Power cuts both ways.</p>
+      </div>
+    </div>
+    <p class="reveal d3 faint mono" style="margin-top: var(--content-gap); font-size: var(--small-size);">
+      pattern: <span class="accent">notice</span> → <span class="accent">decide</span> → <span class="accent">act</span>  ·  sometimes too far
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">04 / 18</span><span>Use cases</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 05 — ARCHITECTURE OVERVIEW (official flow)
+     ============================================================ -->
+<section class="slide" id="s5-arch">
+  <div class="slide-content">
+    <div class="kicker reveal">Architecture</div>
+    <h2 class="reveal d1">The whole picture.</h2>
+    <div class="reveal d2" style="display: flex; justify-content: center; margin-top: var(--content-gap);">
+      <object class="arch" data="assets/architecture.svg" type="image/svg+xml" aria-label="Architecture: User to Channel to Gateway to Agent to Model and back. Memory and Cron sit alongside the Gateway."></object>
+    </div>
+    <p class="reveal d3 dim mono" style="margin-top: var(--content-gap); text-align: center; font-size: var(--small-size);">
+      User → Channel → Gateway → Agent → Model → Response
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">05 / 18</span><span>Architecture · openclaw.cc/concepts</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 05 — GATEWAY
+     ============================================================ -->
+<section class="slide" id="s5">
+  <div class="slide-content">
+    <div class="kicker reveal">Core concept · 1/4</div>
+    <h2 class="reveal d1">Gateway.</h2>
+    <p class="reveal d2 dim" style="font-family: var(--serif); font-style: italic; font-size: clamp(1.2rem, 2.6vw, 1.8rem); margin-top: var(--element-gap);">
+      The central hub. One normalized language in, one out.
+    </p>
+    <ul class="feature-list reveal d3" style="margin-top: var(--content-gap);">
+      <li>Routes messages from any channel to the right agent and session.</li>
+      <li>Holds the agent loop: receive → run → reply → persist.</li>
+      <li>Owns the heartbeat: cron jobs and scheduled wake-ups live here.</li>
+      <li>You don't write a gateway. You configure one and forget about it.</li>
+    </ul>
+  </div>
+  <div class="slide-meta"><span class="num">06 / 18</span><span>Gateway</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 06 — CHANNELS
+     ============================================================ -->
+<section class="slide" id="s6">
+  <div class="slide-content">
+    <div class="kicker reveal">Core concept · 2/4</div>
+    <h2 class="reveal d1">Channels.</h2>
+    <p class="reveal d2 dim" style="font-family: var(--serif); font-style: italic; font-size: clamp(1.2rem, 2.6vw, 1.8rem); margin-top: var(--element-gap);">
+      How the outside world reaches your agent.
+    </p>
+    <div class="grid-3 reveal d3" style="margin-top: var(--content-gap);">
+      <div class="tile"><h3>Web UI</h3><p>What we'll use today. Browser tab, type, hit enter.</p></div>
+      <div class="tile"><h3>CLI</h3><p>Terminal. Pipe text in, pipe text out. Scriptable.</p></div>
+      <div class="tile"><h3>Messaging</h3><p>Telegram · Slack · Discord · WhatsApp. One agent, many surfaces.</p></div>
+    </div>
+    <p class="reveal d4" style="margin-top: var(--content-gap); font-size: var(--small-size);">
+      <span class="tag hot">today</span> &nbsp; one channel — the Web UI. Multi-channel is a follow-up.
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">07 / 18</span><span>Channels</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 07 — MEMORY AS MARKDOWN (SOUL.md)
+     ============================================================ -->
+<section class="slide" id="s7">
+  <div class="slide-content">
+    <div class="kicker reveal">Core concept · 3/4</div>
+    <h2 class="reveal d1">Memory is markdown on disk.</h2>
+    <div class="grid-2 reveal d2" style="margin-top: var(--content-gap); align-items: start;">
+      <div class="col">
+        <p>Your agent's personality, preferences, and long-term knowledge live in <strong>plain markdown files</strong> you open in any editor.</p>
+        <p class="dim">No vector DB to set up. No black box. <code>cat</code>, <code>vim</code>, <code>git diff</code>.</p>
+        <p class="dim mono small" style="font-size: var(--small-size);">SOUL.md is an official OpenClaw template.</p>
+      </div>
+<pre class="code"><span class="c"># SOUL.md  ·  who the agent is</span>
+
+You are <span class="v">Lobster</span>, a calm second-brain
+for <span class="v">Sachin</span>. Speak briefly. Save
+anything tagged <span class="s">#keep</span> to MEMORY.md.
+
+<span class="c"># MEMORY.md  ·  what it has learned</span>
+
+- <span class="s">2026-05-08</span>  Sachin prefers
+  short morning briefings, no emojis.
+- <span class="s">2026-05-09</span>  OpenClaw event
+  in Stuttgart confirmed for tonight.</pre>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">08 / 18</span><span>Memory · SOUL.md</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 08 — ALWAYS-ON / CRON
+     ============================================================ -->
+<section class="slide" id="s8">
+  <div class="slide-content">
+    <div class="kicker reveal">Core concept · 4/4</div>
+    <h2 class="reveal d1">Always on. Not waiting.</h2>
+    <div class="grid-2 reveal d2" style="margin-top: var(--content-gap); align-items: start;">
+      <div class="col">
+        <p>Most "AI assistants" only think when you ping them. OpenClaw can run on a heartbeat.</p>
+        <ul class="feature-list" style="margin-top: var(--element-gap);">
+          <li>Wake every minute, hour, or day.</li>
+          <li>Read its memory, check the world, write back.</li>
+          <li>Send <em>you</em> a message — not the other way around.</li>
+        </ul>
+      </div>
+<pre class="code"><span class="c"># cron · the daily review agent</span>
+
+<span class="k">every</span> day at <span class="v">07:30</span>:
+  read <span class="s">notes/*.md</span> from yesterday
+  summarize into <span class="s">daily-review.md</span>
+  message me on the <span class="v">web</span> channel
+
+<span class="c"># this is the canonical "always-on" pattern</span></pre>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">09 / 18</span><span>Cron · Heartbeat</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 09 — PI: THE CODING BRAIN
+     ============================================================ -->
+<section class="slide" id="s10">
+  <div class="slide-content">
+    <div class="kicker reveal">Inside the agent</div>
+    <h2 class="reveal d1">Pi — the coding brain.</h2>
+    <p class="reveal d2 dim" style="margin-top: var(--element-gap); max-width: 60ch;">
+      OpenClaw embeds <strong>Pi</strong>, an open-source coding agent that gives your assistant real hands.
+      Read, Write, Edit, Bash — the same primitives a developer uses.
+    </p>
+    <div class="grid-4 reveal d3" style="margin-top: var(--content-gap);">
+      <div class="tile"><span class="num">read</span><h3>Read</h3><p>Open files, scan folders, ingest context.</p></div>
+      <div class="tile"><span class="num">write</span><h3>Write</h3><p>Create new files. Memory. Logs. Reports.</p></div>
+      <div class="tile"><span class="num">edit</span><h3>Edit</h3><p>Surgical patches. Update one line. Bump a counter.</p></div>
+      <div class="tile"><span class="num">bash</span><h3>Bash</h3><p>Run anything. Shell, scripts, your own tools.</p></div>
+    </div>
+    <p class="reveal d4 faint mono" style="margin-top: var(--content-gap); font-size: var(--small-size);">
+      docs.openclaw.ai/pi  ·  built on @mariozechner/pi-coding-agent
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">10 / 18</span><span>Pi</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 — KEY PRINCIPLES
+     ============================================================ -->
+<section class="slide" id="s11">
+  <div class="slide-content">
+    <div class="kicker reveal">Why it's shaped this way</div>
+    <h2 class="reveal d1">Four principles.</h2>
+    <div class="grid-4 reveal d2" style="margin-top: var(--content-gap);">
+      <div class="tile"><span class="num">01</span><h3>Local-first</h3><p>Runs on your laptop, your VPS, or your homelab. The cloud is optional.</p></div>
+      <div class="tile"><span class="num">02</span><h3>Privacy-focused</h3><p>Your memory, your messages, your model keys. Nothing routed through someone else's gateway.</p></div>
+      <div class="tile"><span class="num">03</span><h3>Extensible</h3><p>New tools, new skills, new channels — all pluggable. Nothing in the core is sacred.</p></div>
+      <div class="tile"><span class="num">04</span><h3>Multi-platform</h3><p>One agent, every surface where your humans actually are.</p></div>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">11 / 18</span><span>Key Principles</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 — WIDER LANDSCAPE · HERMES
+     ============================================================ -->
+<section class="slide" id="s11b-hermes">
+  <div class="slide-content">
+    <div class="kicker reveal">Wider landscape</div>
+    <h2 class="reveal d1">We focus on OpenClaw. Hermes is worth a look too.</h2>
+    <p class="reveal d2 dim" style="margin-top: var(--element-gap); max-width: 70ch; font-family: var(--serif); font-style: italic; font-size: clamp(1rem, 2vw, 1.3rem);">
+      Hermes (Nous Research, Feb 2026) is the closest peer to OpenClaw — and on a few axes it's been pulling ahead. Know both, pick one.
+    </p>
+
+    <div class="row reveal d3" style="margin-top: var(--content-gap); gap: clamp(1.5rem, 4vw, 3rem); align-items: stretch;">
+      <div class="col" style="flex: 1; gap: 0.5rem;">
+        <p class="mono accent" style="font-size: var(--h3-size);">OpenClaw</p>
+        <p class="dim">Open-source agent gateway. Markdown memory. Embeds the Pi coding agent. TypeScript. MIT.</p>
+        <p class="faint" style="font-size: var(--small-size);">Best when: editable memory, minimal moving parts, TS shop.</p>
+      </div>
+      <div class="col" style="flex: 1; gap: 0.5rem;">
+        <p class="mono accent" style="font-size: var(--h3-size);">Hermes</p>
+        <p class="dim">Open-source autonomous agent. Persistent memory. Automated skill creation. Multi-channel gateway (Telegram, Discord, Slack, WhatsApp, Signal, CLI). 40+ built-in skills. Local / Docker / SSH / Modal sandboxes. Python. MIT.</p>
+        <p class="faint" style="font-size: var(--small-size);">Best when: richer skills catalog, stronger sandboxing, Python shop.</p>
+      </div>
+    </div>
+
+    <p class="reveal d4 mono" style="margin-top: var(--content-gap); font-size: var(--small-size); color: var(--accent);">
+      hermes-agent.org  ·  github.com/badlogic/pi-mono  ·  openclaw.cc
+    </p>
+    <p class="reveal d5 faint" style="margin-top: 0.4rem; font-size: var(--small-size);">
+      Context: AI Lab Notes, May 2026.
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">12 / 18</span><span>Wider landscape · Hermes</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — LIVE DEMO
+     ============================================================ -->
+<section class="slide" id="s12">
+  <div class="slide-content">
+    <div class="kicker reveal">Live</div>
+    <h2 class="reveal d1">Watch this happen.</h2>
+    <div class="demo-frame reveal d2" style="margin-top: var(--content-gap);">
+      <div class="pulse"></div>
+      <p class="mono accent" style="font-size: var(--h3-size);">message  →  markdown  →  reply</p>
+      <p class="dim" style="text-align: center; max-width: 50ch;">
+        I'll send a chat message. OpenClaw will append it to a markdown log,
+        summarize what's there, and reply with the summary.
+      </p>
+      <p class="faint mono" style="font-size: var(--small-size);">~ 2 minutes · switching to terminal ~</p>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">13 / 18</span><span>Live demo</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — WHERE TO DEPLOY
+     ============================================================ -->
+<section class="slide" id="s13-deploy">
+  <div class="slide-content">
+    <div class="kicker reveal">Where it runs</div>
+    <h2 class="reveal d1">Three places. Pick one.</h2>
+    <table class="cmp reveal d2" style="margin-top: var(--content-gap);">
+      <thead><tr><th>Where</th><th>Best for</th><th>Today</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="label">Local laptop</td>
+          <td>Hacking. Fast iteration. Editing files in your IDE.</td>
+          <td><span class="tag hot">recommended</span></td>
+        </tr>
+        <tr>
+          <td class="label">coral.inc</td>
+          <td>Zero install. Everything in the browser. No env vars to manage.</td>
+          <td><span class="tag">if local breaks</span></td>
+        </tr>
+        <tr>
+          <td class="label">VPS · Hostinger / GCP</td>
+          <td>Always-on. Cron actually fires. Your agent lives somewhere.</td>
+          <td><span class="tag faint">after the workshop</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="reveal d3 faint" style="margin-top: var(--content-gap); font-size: var(--small-size);">Full deploy guides in the openclaw-guides repo.</p>
+  </div>
+  <div class="slide-meta"><span class="num">14 / 18</span><span>Deploy</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14 — TEAM UP + SETUP
+     ============================================================ -->
+<section class="slide" id="s14">
+  <div class="slide-content">
+    <div class="kicker reveal">Now build</div>
+    <h2 class="reveal d1">Team up. Run three commands. Go.</h2>
+    <p class="reveal d2 dim" style="margin-top: var(--element-gap); max-width: 60ch; font-family: var(--serif); font-style: italic; font-size: clamp(1.05rem, 2.2vw, 1.4rem);">
+      Grab the people next to you. Solo is fine — you'll move faster in twos or threes.
+    </p>
+
+<pre class="code reveal d3" style="margin-top: var(--content-gap); max-width: 72ch;"><span class="k">git clone</span> github.com/<span class="v">creators-stuttgart</span>/openclaw-guides &amp;&amp; <span class="k">cd</span> openclaw-guides
+<span class="k">npm install</span> &amp;&amp; <span class="k">cp</span> .env.example .env <span class="c"># add OpenClaw + model keys</span>
+<span class="k">npm run</span> dev</pre>
+
+    <p class="reveal d4 faint" style="margin-top: var(--content-gap); font-size: var(--small-size);">
+      Cheatsheet on your table has the URL. Stuck &gt; 5 min → flag a volunteer.
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">15 / 18</span><span>Team up · Setup</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 18 — SUCCESS CRITERIA (re-projected during build)
+     ============================================================ -->
+<section class="slide" id="s18">
+  <div class="slide-content" style="justify-content: center; align-items: center; text-align: center;">
+    <div class="kicker reveal">Done means</div>
+    <p class="reveal d1 bigstat" style="margin-top: 0.5rem;">message →<br/><span class="accent">markdown</span> → reply</p>
+    <p class="reveal d2 dim" style="font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.6rem); margin-top: var(--content-gap); max-width: 60ch;">
+      You send a message. OpenClaw writes or updates a markdown file. You see confirmation in chat.
+      That's it. Anything beyond is bonus.
+    </p>
+    <p class="reveal d3 mono" style="margin-top: var(--content-gap); color: var(--accent); font-size: var(--small-size);">
+      stuck after 1 hour? → switch to the shared demo agent and keep playing
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">16 / 18</span><span>Success criteria</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 21 — QR CODE / LINKS
+     ============================================================ -->
+<section class="slide" id="s21">
+  <div class="slide-content">
+    <div class="kicker reveal">Take this with you</div>
+    <h2 class="reveal d1">Everything is in one repo.</h2>
+    <div class="row reveal d2" style="margin-top: var(--content-gap); gap: clamp(2rem, 5vw, 4rem); align-items: center;">
+      <div class="qr-box">QR<br/>placeholder</div>
+      <div class="col" style="gap: 0.6rem;">
+        <p class="mono" style="color: var(--accent); font-size: var(--h3-size);">openclaw-guides</p>
+        <p class="dim">Long-form guides · workflow starters · deployment recipes · this slide deck</p>
+        <p class="mono" style="font-size: var(--small-size); margin-top: 1rem; color: var(--fg-dim);">
+          github.com/creators-stuttgart/openclaw-guides<br/>
+          slides &nbsp;·&nbsp; openclaw-stuttgart.vercel.app
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-meta"><span class="num">17 / 18</span><span>Resources</span></div>
+</section>
+
+<!-- ============================================================
+     SLIDE 22 — THANK YOU / OUTRO
+     ============================================================ -->
+<section class="slide" id="s22">
+  <div class="slide-content" style="justify-content: center; align-items: center; text-align: center;">
+    <p class="reveal title-mark">— end of impulse —</p>
+    <h1 class="reveal d1" style="font-size: clamp(2.5rem, 8vw, 6rem); margin-top: var(--content-gap);">
+      Now <span class="glyph">build</span> something.
+    </h1>
+    <p class="reveal d2 dim" style="font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.7rem); margin-top: var(--content-gap); max-width: 50ch;">
+      Volunteers are roaming. Snacks are at the back. Keys to interesting things are in the repo.
+    </p>
+    <p class="reveal d3 mono" style="margin-top: var(--content-gap); font-size: var(--small-size); color: var(--accent);">
+      Stuttgart  ·  2026  ·  Creators × KI-Bundesverband × Startup Stuttgart
+    </p>
+  </div>
+  <div class="slide-meta"><span class="num">18 / 18</span><span>Thanks</span></div>
+</section>
+
+<!-- ============================================================
+     NAV + KEYBOARD
+     ============================================================ -->
+<nav class="nav-dots" aria-label="Slide navigation"></nav>
+<div class="keyboard-hint">↑ ↓  ·  space  ·  F</div>
+
+<script>
+  /* === Build right-edge nav dots === */
+  const slides = document.querySelectorAll('.slide');
+  const dotsNav = document.querySelector('.nav-dots');
+  slides.forEach((s, i) => {
+    const a = document.createElement('a');
+    a.href = '#' + s.id;
+    a.setAttribute('aria-label', 'Slide ' + (i + 1));
+    dotsNav.appendChild(a);
+  });
+  const dots = dotsNav.querySelectorAll('a');
+
+  /* === IntersectionObserver: trigger reveal + active dot === */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const idx = [...slides].indexOf(e.target);
+      if (e.isIntersecting && e.intersectionRatio > 0.55) {
+        e.target.classList.add('in-view');
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[idx]) dots[idx].classList.add('active');
+      }
+    });
+  }, { threshold: [0.55] });
+  slides.forEach(s => io.observe(s));
+
+  /* === Keyboard navigation === */
+  let current = 0;
+  function go(delta) {
+    current = Math.max(0, Math.min(slides.length - 1, current + delta));
+    slides[current].scrollIntoView({ behavior: 'smooth' });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'PageDown', ' ', 'j'].includes(e.key)) { e.preventDefault(); go(1); }
+    else if (['ArrowUp', 'PageUp', 'k'].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if (e.key === 'Home') { current = 0; slides[0].scrollIntoView({ behavior: 'smooth' }); }
+    else if (e.key === 'End') { current = slides.length - 1; slides[current].scrollIntoView({ behavior: 'smooth' }); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  /* Track current slide via scroll snap */
+  const sObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.6) current = [...slides].indexOf(e.target);
+    });
+  }, { threshold: [0.6] });
+  slides.forEach(s => sObs.observe(s));
+</script>
+</body>
+</html>

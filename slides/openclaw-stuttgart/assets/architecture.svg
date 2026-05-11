@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Left-to-right reading: main pipeline on one row; Memory then Cron below (also L→R).
+  Fixed hex colors (object embed does not inherit HTML currentColor reliably).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" font-family="'JetBrains Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e8dfd4"/>
+    </marker>
+    <marker id="arrowBack" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ff6b35"/>
+    </marker>
+  </defs>
+
+  <!-- Main row: strict left → right -->
+  <g id="row-main">
+    <rect x="48" y="88" width="128" height="118" rx="8" fill="#15151a" stroke="#d4c9bc" stroke-width="2"/>
+    <text x="112" y="138" text-anchor="middle" font-size="19" fill="#f4ede1">User</text>
+    <text x="112" y="160" text-anchor="middle" font-size="10" fill="#b0a69a">you, your team</text>
+
+    <rect x="265" y="88" width="150" height="118" rx="8" fill="#15151a" stroke="#d4c9bc" stroke-width="2"/>
+    <text x="340" y="130" text-anchor="middle" font-size="17" fill="#f4ede1">Channel</text>
+    <text x="340" y="148" text-anchor="middle" font-size="9.5" fill="#b0a69a">web · CLI · messengers</text>
+    <text x="340" y="162" text-anchor="middle" font-size="9.5" fill="#b0a69a">Telegram · Slack · more</text>
+
+    <rect x="504" y="88" width="172" height="118" rx="8" fill="#ff6b35" stroke="#ff8f5e" stroke-width="2"/>
+    <text x="590" y="128" text-anchor="middle" font-size="19" fill="#0b0b0e" font-weight="700">Gateway</text>
+    <text x="590" y="148" text-anchor="middle" font-size="10" fill="#0b0b0e" opacity="0.92">routes · sessions</text>
+    <text x="590" y="164" text-anchor="middle" font-size="10" fill="#0b0b0e" opacity="0.92">ties to disk · cron below</text>
+
+    <rect x="765" y="88" width="148" height="118" rx="8" fill="#15151a" stroke="#d4c9bc" stroke-width="2"/>
+    <text x="839" y="130" text-anchor="middle" font-size="17" fill="#f4ede1">Agent</text>
+    <text x="839" y="150" text-anchor="middle" font-size="9.5" fill="#b0a69a">Pi (default)</text>
+    <text x="839" y="166" text-anchor="middle" font-size="9.5" fill="#b0a69a">tools · skills · SOUL.md</text>
+
+    <rect x="1002" y="88" width="148" height="118" rx="8" fill="#15151a" stroke="#d4c9bc" stroke-width="2"/>
+    <text x="1076" y="132" text-anchor="middle" font-size="17" fill="#f4ede1">Model</text>
+    <text x="1076" y="152" text-anchor="middle" font-size="9.5" fill="#b0a69a">Anthropic · OpenAI · …</text>
+    <text x="1076" y="168" text-anchor="middle" font-size="9.5" fill="#b0a69a">local · swappable</text>
+  </g>
+
+  <!-- Request path (→) centerline of main row -->
+  <line x1="176" y1="147" x2="263" y2="147" stroke="#e8dfd4" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="415" y1="147" x2="502" y2="147" stroke="#e8dfd4" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="676" y1="147" x2="763" y2="147" stroke="#e8dfd4" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="913" y1="147" x2="999" y2="147" stroke="#e8dfd4" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- Response path (←) slightly lower -->
+  <line x1="1000" y1="171" x2="915" y2="171" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowBack)"/>
+  <line x1="763" y1="171" x2="678" y2="171" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowBack)"/>
+  <line x1="502" y1="171" x2="417" y2="171" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowBack)"/>
+  <line x1="263" y1="171" x2="178" y2="171" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowBack)"/>
+
+  <!-- Below: Memory (left) · Cron (right) — same reading order as spoken English -->
+  <rect x="48" y="238" width="530" height="82" rx="8" fill="#121218" stroke="#9a9288" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="313" y="268" text-anchor="middle" font-size="13.5" fill="#e8dfd4">Memory — markdown on disk</text>
+  <text x="313" y="288" text-anchor="middle" font-size="10.5" fill="#a89f94">SOUL.md · USER.md · MEMORY.md · notes/*.md</text>
+
+  <rect x="598" y="238" width="552" height="82" rx="8" fill="#121218" stroke="#9a9288" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="874" y="268" text-anchor="middle" font-size="13.5" fill="#e8dfd4">Cron · heartbeat — always-on</text>
+  <text x="874" y="288" text-anchor="middle" font-size="10.5" fill="#a89f94">wake · check · write · message</text>
+
+  <!-- Gateway fans out to Memory (left) and Cron (right) — still L→R labels below -->
+  <path d="M 590 206 L 590 218 L 313 218 L 313 238" fill="none" stroke="#8a8178" stroke-width="1.75" stroke-dasharray="4 4" opacity="0.9"/>
+  <path d="M 590 206 L 590 218 L 874 218 L 874 238" fill="none" stroke="#8a8178" stroke-width="1.75" stroke-dasharray="4 4" opacity="0.9"/>
+
+  <!-- Subtle captions: reading direction -->
+  <text x="1150" y="62" text-anchor="end" font-size="9" fill="#6d6560" font-style="italic">request → · ← response</text>
+</svg>
