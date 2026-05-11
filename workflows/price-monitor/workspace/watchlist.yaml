@@ -1,31 +1,52 @@
 # Price Monitor — watchlist
-# Define items to monitor. The agent checks each on every heartbeat.
+# Define items to monitor. The agent checks each on every run.
 #
 # Fields:
 #   name:       Human-readable label for alerts
-#   url:        RSS feed or web page URL to fetch
-#   type:       "rss" or "webpage"
+#   url:        URL to fetch (RSS, JSON API, plain CSV, or HTML page)
+#   type:       "rss" or "webpage" — informational; the LLM extracts the
+#               price from whatever the URL returns regardless.
 #   threshold:  Price threshold that triggers an alert
 #   direction:  "below" = alert when price drops below threshold
 #               "above" = alert when price rises above threshold
 #
-# Examples below — replace with your own targets.
+# ── Choosing good sources ────────────────────────────────────────
+# The script `curl`s the URL with no headers, no cookies, no JS. So it
+# works best with sources that return parseable text without a browser:
+#   - JSON APIs (e.g. CoinGecko, Frankfurter)
+#   - CSV endpoints (e.g. Stooq)
+#   - Simple RSS feeds (NOT Yahoo Finance — it serves maintenance pages)
+# It works WORST with:
+#   - Sites behind Cloudflare bot protection (Amazon, raspberrypi.com,
+#     most major retailers) — you get the challenge page, not the price.
+#   - JS-rendered SPAs — curl sees an empty shell.
+# If a source you want is curl-hostile, you'll need a headless-browser
+# fetch step (puppeteer/playwright) — out of scope for this workshop.
 
 items:
   - name: "Bitcoin (BTC/USD)"
-    url: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=BTC-USD"
-    type: rss
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+    type: webpage
     threshold: 50000
     direction: below
 
-  - name: "Raspberry Pi 5 (8GB)"
-    url: "https://www.raspberrypi.com/products/raspberry-pi-5/"
+  - name: "Ethereum (ETH/USD)"
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
     type: webpage
-    threshold: 80
-    direction: below
-
-  - name: "Gold (XAU/USD)"
-    url: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=GC=F"
-    type: rss
-    threshold: 2500
+    threshold: 5000
     direction: above
+
+  # PAXG is a token backed 1:1 by physical gold — the price tracks spot
+  # XAU/USD closely and CoinGecko exposes it without auth or rate limits
+  # the way Stooq does. Good enough as a "gold price" proxy for alerts.
+  - name: "Gold (PAXG/USD, ≈ spot)"
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd"
+    type: webpage
+    threshold: 5000
+    direction: above
+
+  - name: "EUR/USD"
+    url: "https://api.frankfurter.app/latest?from=EUR&to=USD"
+    type: webpage
+    threshold: 1.05
+    direction: below
