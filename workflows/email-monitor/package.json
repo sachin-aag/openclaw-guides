@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "scan": "npx tsx skills/email-monitor.ts",
+    "bot": "npx tsx skills/bot.ts",
     "dev": "npx tsx skills/email-monitor.ts"
   },
   "engines": {

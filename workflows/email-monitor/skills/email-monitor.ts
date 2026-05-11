@@ -4,9 +4,11 @@
  * Connects to a Gmail account via IMAP (using ImapFlow), checks for new
  * unread emails, sends them to an LLM for summarization and urgency
  * classification, and writes a digest to `workspace/email-digests/`.
+ * Optionally also delivers the digest to a Telegram chat.
  *
- * Run:
- *   npm run scan
+ * Two entry points share this module:
+ *   - npm run scan  → main() below (one-shot, always re-scans)
+ *   - npm run bot   → bot.ts (calls runScan() through a mutex)
  */
 
 import "dotenv/config";
@@ -51,6 +53,9 @@ Rules:
 - Never include full email bodies in the digest — summaries only.
 - Classify urgency conservatively. When in doubt, use 🟡 not 🔴.
 - Always include sender and subject.
+- If a category has no items, write a single bullet "- (none)" under the
+  header. Do NOT write prose like "No urgent emails in this batch" or leave
+  the section blank — downstream code looks for bullet rows.
 `.trim();
 
 // ── helpers ───────────────────────────────────────────────────────
@@ -58,7 +63,24 @@ Rules:
 function extractSection(markdown: string, heading: string): string {
   const pattern = new RegExp(`## ${heading}\\n([\\s\\S]*?)(?=\\n## |$)`);
   const match = markdown.match(pattern);
-  return match ? match[1].trim() : "(could not extract section)";
+  return match ? match[1].trim() : "";
+}
+
+/**
+ * Returns true iff the digest's 🔴 Urgent section contains at least one
+ * real bullet line that isn't the "(none)" placeholder. Used by:
+ *  - the CLI to decide whether to print "URGENT emails detected!"
+ *  - the bot's cron to decide whether to push (alerts-only mode)
+ *
+ * The model sometimes improvises prose like "*No urgent in this batch.*"
+ * under the header; that's treated as empty.
+ */
+export function hasUrgentSection(digest: string): boolean {
+  const section = extractSection(digest, "🔴 Urgent");
+  if (!section) return false;
+  const hasRealBullet = /^\s*-\s+\S/m.test(section);
+  const isJustNonePlaceholder = /^\s*-\s+\(?none\)?\s*$/im.test(section);
+  return hasRealBullet && !isJustNonePlaceholder;
 }
 
 function appendToLog(logPath: string, entry: string): void {
@@ -72,9 +94,96 @@ function appendToLog(logPath: string, entry: string): void {
   writeFileSync(logPath, content, "utf-8");
 }
 
-// ── main ──────────────────────────────────────────────────────────
+// ── Telegram delivery ─────────────────────────────────────────────
 
-async function main() {
+// Telegram caps each message at 4096 chars. Split on paragraph
+// boundaries so headings and bullets stay readable.
+const TELEGRAM_MAX_CHARS = 3800;
+
+function chunkForTelegram(text: string, max = TELEGRAM_MAX_CHARS): string[] {
+  if (text.length <= max) return [text];
+  const chunks: string[] = [];
+  const paragraphs = text.split(/\n\n+/);
+  let buf = "";
+  for (const p of paragraphs) {
+    if ((buf + "\n\n" + p).length > max && buf) {
+      chunks.push(buf);
+      buf = p;
+    } else {
+      buf = buf ? `${buf}\n\n${p}` : p;
+    }
+  }
+  if (buf) chunks.push(buf);
+  return chunks;
+}
+
+export async function sendToTelegram(
+  message: string,
+  dateLabel: string,
+  opts: { token?: string; chatId?: string } = {},
+): Promise<{ delivered: boolean; reason?: string }> {
+  const token = (opts.token ?? process.env.TELEGRAM_BOT_TOKEN ?? "").trim();
+  const chatId = (opts.chatId ?? process.env.TELEGRAM_CHAT_ID ?? "").trim();
+
+  if (!token || !chatId) {
+    return { delivered: false, reason: "TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set" };
+  }
+
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  const chunks = chunkForTelegram(message);
+
+  for (let i = 0; i < chunks.length; i++) {
+    const prefix =
+      chunks.length > 1 ? `[${i + 1}/${chunks.length}] Email digest ${dateLabel}\n\n` : "";
+    const body = prefix + chunks[i];
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: body,
+        disable_web_page_preview: true,
+      }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`Telegram sendMessage failed (${res.status}): ${errText}`);
+    }
+  }
+
+  return { delivered: true };
+}
+
+// ── core: runScan ─────────────────────────────────────────────────
+
+export interface RunScanOptions {
+  /**
+   * Override the outbound Telegram delivery target. Behaviour:
+   *   - { chatId } → always send the digest to that chat (or "no new
+   *                  emails" notice). Used by the explicit /scan command.
+   *   - null       → no delivery
+   *   - undefined  → cron-style: send the env-default chat ONLY when
+   *                  the digest contains 🔴 Urgent items. Quiet runs
+   *                  (no new emails, or no urgent items) stay quiet.
+   */
+  deliverTo?: { chatId: string } | null;
+  /** Override stdout logging. Defaults to console.log. */
+  log?: (msg: string) => void;
+}
+
+export interface RunScanResult {
+  timestamp: string;
+  emailsProcessed: number;
+  digest: string | null;
+  digestPath: string | null;
+  hasUrgent: boolean;
+  telegram: { delivered: boolean; reason?: string };
+}
+
+export async function runScan(opts: RunScanOptions = {}): Promise<RunScanResult> {
+  const log = opts.log ?? ((m: string) => console.log(m));
   const imapHost = process.env.EMAIL_IMAP_HOST || "imap.gmail.com";
   const imapPort = parseInt(process.env.EMAIL_IMAP_PORT || "993", 10);
   const emailUser = process.env.EMAIL_USER;
@@ -83,47 +192,51 @@ async function main() {
   const logFile = resolve("workspace/email-log.md");
 
   if (!emailUser || !emailPass) {
-    console.error("Email monitor not configured. Set EMAIL_USER and EMAIL_APP_PASSWORD in .env.");
-    process.exit(1);
+    throw new Error(
+      "Email monitor not configured. Set EMAIL_USER and EMAIL_APP_PASSWORD in .env.",
+    );
   }
 
   const today = new Date();
   const timestamp = today.toISOString().slice(0, 16).replace("T", "-").replace(":", "");
   const readableTime = today.toISOString().slice(0, 16).replace("T", " ");
 
-  // Dynamic import — ImapFlow is a CommonJS module
+  // Dynamic import — ImapFlow is a CommonJS module.
   const { ImapFlow } = await import("imapflow");
 
   const client = new ImapFlow({
     host: imapHost,
     port: imapPort,
     secure: true,
-    auth: {
-      user: emailUser,
-      pass: emailPass,
-    },
+    auth: { user: emailUser, pass: emailPass },
     logger: false,
   });
 
   try {
-    console.log(`Connecting to ${imapHost}:${imapPort}...`);
+    log(`Connecting to ${imapHost}:${imapPort}...`);
     await client.connect();
 
     const lock = await client.getMailboxLock("INBOX");
     try {
-      // 1. Search for unread messages
       const uids = await client.search({ seen: false }, { uid: true });
 
       if (uids.length === 0) {
-        const logMsg = `[${readableTime}] No new unread emails.`;
-        appendToLog(logFile, logMsg);
-        console.log("No new unread emails.");
-        return;
+        appendToLog(logFile, `[${readableTime}] No new unread emails.`);
+        log("No new unread emails.");
+        const tg = await deliver(null, readableTime, false, opts);
+        return {
+          timestamp: readableTime,
+          emailsProcessed: 0,
+          digest: null,
+          digestPath: null,
+          hasUrgent: false,
+          telegram: tg,
+        };
       }
 
-      console.log(`Found ${uids.length} unread email(s). Fetching...`);
+      log(`Found ${uids.length} unread email(s). Fetching...`);
 
-      // 2. Fetch headers + body snippet (limit to 20 most recent)
+      // Fetch headers + body snippet (limit to 20 most recent).
       const recentUids = uids.slice(-20);
       const emailData: string[] = [];
 
@@ -140,11 +253,9 @@ async function main() {
         const subject = envelope.subject || "(no subject)";
         const date = envelope.date?.toISOString() || "(no date)";
 
-        // Extract text from source if available
         let bodySnippet = "";
         if (msg.source) {
           const sourceStr = msg.source.toString("utf-8");
-          // Take last portion after headers (rough body extraction)
           const bodyStart = sourceStr.indexOf("\r\n\r\n");
           if (bodyStart > -1) {
             bodySnippet = sourceStr.slice(bodyStart + 4, bodyStart + 2004);
@@ -154,10 +265,9 @@ async function main() {
         emailData.push(
           `--- UID ${msg.uid} ---\nFrom: ${from}\nSubject: ${subject}\nDate: ${date}\n\nBody snippet:\n${bodySnippet}`,
         );
-        console.log(`  FETCHED UID ${msg.uid}: ${subject}`);
+        log(`  FETCHED UID ${msg.uid}: ${subject}`);
       }
 
-      // 3. Send to model for summarization and classification
       const modelInput = [
         `Current time: ${readableTime}`,
         `Number of unread emails: ${uids.length} (showing ${recentUids.length} most recent)`,
@@ -167,43 +277,105 @@ async function main() {
         emailData.join("\n\n"),
       ].join("\n");
 
-      console.log("Generating digest...");
+      log("Generating digest...");
       const digest = await generateText(modelInput, SYSTEM_PROMPT);
 
-      // 4. Write digest file
       mkdirSync(resolve(digestDir), { recursive: true });
       const digestPath = resolve(digestDir, `${timestamp}.md`);
       writeFileSync(digestPath, digest, "utf-8");
 
-      // 5. Log the check
-      const logMsg = `[${readableTime}] Processed ${recentUids.length} emails -> ${digestPath}`;
-      appendToLog(logFile, logMsg);
+      appendToLog(
+        logFile,
+        `[${readableTime}] Processed ${recentUids.length} emails -> ${digestPath}`,
+      );
 
-      // 6. Check for urgent items
-      const hasUrgent =
-        digest.includes("## 🔴 Urgent") && !digest.includes("## 🔴 Urgent\n\n## ");
+      const hasUrgent = hasUrgentSection(digest);
       if (hasUrgent) {
         const urgentSection = extractSection(digest, "🔴 Urgent");
-        console.log(`\nURGENT emails detected!\n\n${urgentSection}`);
+        log(`\nURGENT emails detected!\n\n${urgentSection}`);
       }
 
-      console.log(
-        `\nDigest saved to ${digestPath} (${recentUids.length} emails processed).`,
-      );
+      log(`\nDigest saved to ${digestPath} (${recentUids.length} emails processed).`);
+
+      const tg = await deliver(digest, readableTime, hasUrgent, opts);
+
+      return {
+        timestamp: readableTime,
+        emailsProcessed: recentUids.length,
+        digest,
+        digestPath,
+        hasUrgent,
+        telegram: tg,
+      };
     } finally {
       lock.release();
     }
   } catch (err: any) {
-    const errorMsg = `[${readableTime}] IMAP error: ${err.message || "unknown error"}`;
-    appendToLog(logFile, errorMsg);
-    console.error(`Email check failed: ${err.message || "IMAP connection error"}`);
-    process.exit(1);
+    appendToLog(logFile, `[${readableTime}] IMAP error: ${err.message || "unknown error"}`);
+    throw err;
   } finally {
     await client.logout().catch(() => {});
   }
 }
 
-main().catch((err) => {
-  console.error("Fatal error:", err);
-  process.exit(1);
-});
+async function deliver(
+  digest: string | null,
+  dateLabel: string,
+  hasUrgent: boolean,
+  opts: RunScanOptions,
+): Promise<{ delivered: boolean; reason?: string }> {
+  if (opts.deliverTo === null) return { delivered: false, reason: "delivery disabled by caller" };
+
+  // Cron-style default: only push to env chat when there are urgent items.
+  // No-new-mail and no-urgent-this-batch runs stay quiet.
+  if (opts.deliverTo === undefined) {
+    if (!digest || !hasUrgent) {
+      return { delivered: false, reason: "no urgent items to push" };
+    }
+    try {
+      return await sendToTelegram(digest, dateLabel);
+    } catch (err: any) {
+      return { delivered: false, reason: err.message ?? String(err) };
+    }
+  }
+
+  // Explicit caller (a /scan command): tell the user what happened, even
+  // if there were no new emails.
+  const message = digest ?? `No new unread emails as of ${dateLabel}.`;
+  try {
+    return await sendToTelegram(message, dateLabel, { chatId: opts.deliverTo.chatId });
+  } catch (err: any) {
+    return { delivered: false, reason: err.message ?? String(err) };
+  }
+}
+
+// ── CLI entry point ───────────────────────────────────────────────
+
+async function main() {
+  // CLI semantics: the user explicitly invoked `npm run scan`, so always
+  // push the digest (or "no new emails") to TELEGRAM_CHAT_ID if set.
+  // Cron-mode (alerts-only) is reserved for the bot's recurring scan.
+  const envChatId = (process.env.TELEGRAM_CHAT_ID ?? "").trim();
+  const result = await runScan({
+    deliverTo: envChatId ? { chatId: envChatId } : null,
+  });
+
+  if (result.telegram.delivered) {
+    console.log("Telegram: delivered.");
+  } else if (!envChatId) {
+    console.log("Telegram: skipped (TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set).");
+  } else if (result.telegram.reason) {
+    console.log(`Telegram: ${result.telegram.reason}`);
+  }
+}
+
+const isCli =
+  process.argv[1] &&
+  (process.argv[1].endsWith("email-monitor.ts") || process.argv[1].endsWith("email-monitor.js"));
+
+if (isCli) {
+  main().catch((err) => {
+    console.error("Fatal error:", err);
+    process.exit(1);
+  });
+}
