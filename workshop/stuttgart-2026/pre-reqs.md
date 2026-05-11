@@ -38,9 +38,9 @@
 
 - [ ] **Optional: set up a Telegram bot** if you want notifications from your agent. Message [@BotFather](https://t.me/botfather) on Telegram, create a bot, and save the token. Not required — all tracks work with the Web UI alone.
 
-## Optional escape hatch
+## After the workshop (optional)
 
-- [ ] **Sign up for [coral.inc](https://coral.inc).** Free tier, zero install. If your local install breaks during the workshop, you can switch to the cloud version in 60 seconds and not lose the session.
+- [ ] **Want an always-on managed home for your agent?** [coral.inc](https://coral.inc) is the lowest-friction option — no VPS to maintain, web UI for editing memory files. It's $50/mo for the base plan; workshop attendees get $30 off the first month with code `STUTTGART`. Not needed for the workshop itself — if your local install breaks on the day, pair with a neighbor instead (see the cheatsheet).
 
 ## At the door
 

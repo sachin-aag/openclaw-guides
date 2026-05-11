@@ -22,7 +22,7 @@ If you're brand new, start with [concepts/01-concepts.md](concepts/01-concepts.m
 | # | Guide | When to reach for it |
 |---|-------|----------------------|
 | 01 | [Install on your laptop](howto/01-install-local.md) | Local-first dev install. Includes the risk callouts. |
-| 02 | [Deploy on coral.inc](howto/02-deploy-coral.md) | Zero-setup hosted instance. Fastest path to "it's running." |
+| 02 | [Deploy on coral.inc](howto/02-deploy-coral.md) | Managed hosted instance, paid ($50/mo base, code `STUTTGART` for $30 off the first month). Reach for it when you want zero infra and don't want to run a VPS. |
 | 03 | [Deploy on Hostinger](howto/03-deploy-vps-hostinger.md) | Three doors: 1-click managed, 1-click VPS, or manual KVM build. |
 | 04 | [Deploy on GCP](howto/04-deploy-vps-gcp.md) | Compute Engine + Secret Manager. |
 | 05 | [Add a messaging channel](howto/05-channels-messaging.md) | Wire up Telegram or Discord. |

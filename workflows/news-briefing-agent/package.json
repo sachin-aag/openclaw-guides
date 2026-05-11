@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "briefing": "npx tsx skills/news-briefing.ts",
-    "dev": "npx tsx skills/news-briefing.ts"
+    "bot": "npx tsx skills/bot.ts"
   },
   "engines": {
     "node": ">=20"

@@ -30,7 +30,7 @@ npm config set registry https://registry.npmjs.org/
 npm install --no-audit --no-fund
 ```
 
-If it still hangs, switch networks (mobile hotspot during the workshop), or use the shared coral.inc instance — see [02-deploy-coral.md](02-deploy-coral.md).
+If it still hangs, switch networks (mobile hotspot during the workshop) or pair with a neighbor whose install works — don't burn the session on a flaky network.
 
 ### `EACCES` permission errors
 
@@ -141,7 +141,7 @@ Open the browser console (`Cmd-Opt-J` / `Ctrl-Shift-J`). If you see WebSocket er
 | `EACCES` on npm | L1 | `chown` fix above |
 | Lost API key | L1 | Issue a temporary workshop key from the shared bucket |
 | `Cannot find module` | L1 | They're in the wrong folder |
-| Hard install break, OS-specific | L2 | Park them on the **shared coral.inc instance** — they don't lose the workshop |
+| Hard install break, OS-specific | L2 | Pair them with a neighbor whose install works — they don't lose the workshop. coral.inc with code `STUTTGART` is a paid post-workshop option, not a real-time escape. |
 | Suspected OpenClaw bug | L2 | File a quick issue on the openclaw-guides repo with a reproducer |
 
 ## Asking for help

@@ -49,9 +49,7 @@ npm run scan
 
 1. **Stuck > 5 minutes** → raise a hand. A volunteer will come.
 2. **Setup is broken in a deep way** → walk to the **installation bar at the back**. Don't burn 30 minutes alone.
-3. **Stuck > 1 hour** → switch to the shared **coral.inc workshop instance**:
-   - URL: *(printed at the top of the room — ask a volunteer)*
-   - Workshop access code: *(handed out at the door)*
+3. **Stuck > 1 hour** → **pair with a neighbor whose install works.** Share their screen, edit memory files together. The point of today is to *use* an agent, not to finish your own install.
 
 ---
 

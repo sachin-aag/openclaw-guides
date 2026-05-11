@@ -60,7 +60,7 @@ You have three realistic deployment targets. Pick based on what you're optimizin
 | Where | Best for | Cost | Always-on? | Setup time |
 |---|---|---|---|---|
 | **Local laptop** | Hacking, fast iteration, editing memory files in your IDE | Free | No (laptop sleeps) | 10 min |
-| **[coral.inc](https://coral.inc)** | Zero install, demos, "I just want it to work" | Free tier, then usage-based | Yes | 5 min |
+| **[coral.inc](https://coral.inc)** | Managed, no VPS to maintain, demos with non-technical teammates | $50/mo base (code `STUTTGART` → $30 off first month) | Yes | 5 min |
 | **VPS** ([Hostinger](../guides/howto/03-deploy-vps-hostinger.md), [GCP](../guides/howto/04-deploy-vps-gcp.md)) | Always-on cron, real users, your own infra | ~€5–15/mo | Yes | 30–60 min |
 
 Most people start local, prove the workflow they care about, then move to a VPS once cron actually matters.

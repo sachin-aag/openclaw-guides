@@ -5,17 +5,67 @@ The fastest way to get a working OpenClaw agent. Best for hacking, fast iteratio
 > **Time:** ~10 minutes
 > **Cost:** free (model API calls extra, typically pennies for the workshop)
 
+> **Security:** a local OpenClaw install gives an LLM **shell access on your laptop** via Pi's `Bash` tool, holds **API keys in `.env`** that bill against your accounts, and ships with **no auth or rate limiting** out of the box. Skim [Risks](#risks) below *before* you run `npm run dev` — especially if you have sensitive files in `$HOME` or are on a shared/work machine. For anything beyond personal hacking, deploy to a VPS ([Hostinger](03-deploy-vps-hostinger.md) / [GCP](04-deploy-vps-gcp.md)) where you control the firewall.
+
 ## Prerequisites
 
-| What | Version | Check |
-|---|---|---|
-| Node.js | 20 LTS or 22 LTS | `node -v` |
-| npm | 10+ | `npm -v` |
-| git | any recent | `git --version` |
-| A code editor | any | — |
-| A model API key | one of | Anthropic, OpenAI, Google, or Featherless |
+You need five things. Each block below tells you what to install, how to install it on each OS, and how to verify it's working.
 
-If you don't have Node, install from [nodejs.org](https://nodejs.org) or via Homebrew (`brew install node@22`).
+### Node.js (20 LTS or 22 LTS)
+
+The runtime that executes OpenClaw and Pi. **Node 22 LTS is recommended.** Node 18 and earlier are EOL and will fail with cryptic errors.
+
+**Verify first:** `node -v` should print `v20.x.x` or `v22.x.x`. If it does, skip the install steps.
+
+**Install:**
+
+- **macOS:** `brew install node@22` (install [Homebrew](https://brew.sh) first if you don't have it). Or grab the installer from [nodejs.org](https://nodejs.org).
+- **Ubuntu / Debian:** `curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash - && sudo apt install -y nodejs`
+- **Windows:** install [WSL2 + Ubuntu](https://learn.microsoft.com/windows/wsl/install), then follow the Ubuntu steps inside WSL. Native Windows works in theory but breaks often — WSL is the supported path.
+- **Anywhere (alternative):** use [`nvm`](https://github.com/nvm-sh/nvm) if you juggle Node versions: `nvm install 22 && nvm use 22`.
+
+### npm (10+)
+
+Ships with Node — you almost certainly don't need to install it separately.
+
+**Verify first:** `npm -v` should print `10.x.x` or higher. If it does, you're done.
+
+**Install / upgrade:** `npm install -g npm@latest`.
+
+### git
+
+Used to clone this repo.
+
+**Verify first:** `git --version` should print `git version 2.x.x`. If it does, skip the install steps.
+
+**Install:**
+
+- **macOS:** preinstalled with Xcode Command Line Tools (`xcode-select --install`), or `brew install git`.
+- **Ubuntu / Debian:** `sudo apt install -y git`
+- **Windows (WSL):** `sudo apt install -y git` inside WSL.
+
+### A code editor
+
+You'll be editing `.env`, markdown memory files (`SOUL.md`, `USER.md`, `MEMORY.md`), and occasionally TypeScript skill code.
+
+**Verify first:** if you already have VS Code, Cursor, JetBrains, Zed, vim, or emacs working — you're done.
+
+**Install:** if you have no preference, download [VS Code](https://code.visualstudio.com) — free, cross-platform, works out of the box.
+
+### A model API key
+
+Pick **one** provider. The workshop tracks are tuned for Claude, but any of these will work.
+
+**Verify first:** if you already have a key for one of the providers below and it has credits / free quota left, you're done — keep the key handy for `.env` in step 3.
+
+**Sign up + create a key:**
+
+- **Anthropic** — [console.anthropic.com](https://console.anthropic.com), create an API key, load $5+ of credits. **Note:** a Claude Pro / Team subscription does *not* give you API access — you need credits at `console.anthropic.com`. Recommended.
+- **OpenAI** — [platform.openai.com](https://platform.openai.com), create an API key, load credits. No free credit on signup.
+- **Google AI Studio** — [aistudio.google.com](https://aistudio.google.com), create an API key. Free tier available; latency varies.
+- **Featherless** — [featherless.ai](https://featherless.ai), create an API key. Generous free tier, access to a wide range of open-source models. Caveat: most models cap at 32K context, which gets tight when OpenClaw loads `SOUL.md` + `MEMORY.md` + notes into every turn.
+
+**Set a hard spending cap of €10/mo in your provider's dashboard before using the key.** Five seconds in the dashboard prevents a four-figure mistake.
 
 ## Steps
 
@@ -129,4 +179,4 @@ npm run reload
 
 - Hit a problem? [06-troubleshooting.md](06-troubleshooting.md)
 - Want it always-on? [03-deploy-vps-hostinger.md](03-deploy-vps-hostinger.md) or [04-deploy-vps-gcp.md](04-deploy-vps-gcp.md)
-- Want zero-install? [02-deploy-coral.md](02-deploy-coral.md)
+- Want it managed (paid)? [02-deploy-coral.md](02-deploy-coral.md)
