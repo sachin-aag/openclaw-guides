@@ -34,7 +34,7 @@ You'll be assigned a zone before doors. **Stay in your zone.** Beginners pair-pr
 | Level | Symptom | Action |
 |---|---|---|
 | **L1** | Wrong Node version, `EACCES`, missing API key, typo in `.env`, `Cannot find module`, agent loaded wrong file path | Sit next to them, fix it together. ~5 minutes. |
-| **L2** | OS-specific install break, suspected OpenClaw bug, npm hangs forever on this network, mystery error after 15 min of poking | **Pair them with a participant whose install works** — they share a screen and edit memory files together. Then come back to fix the broken install in parallel — *but never block the participant on it.* coral.inc with code `STUTTGART` ($30 off $50/mo) is a paid post-workshop option, not a real-time escape. |
+| **L2** | OS-specific install break, suspected OpenClaw bug, npm hangs forever on this network, mystery error after 15 min of poking | **Pair them with a participant whose install works** — they share a screen and edit memory files together. Then come back to fix the broken install in parallel — *but never block the participant on it.* The sponsor's Featherless managed agent (code `STUTTGARTCLAW`, 100 free trial seats first-come-first-served, credit card required) is a parallel option — but **don't** spend triage time on signup flows. Pair-with-neighbor is faster every time. |
 
 The L2 move is the single most important rule. **Better that someone *uses* an agent on a working laptop than spend the whole session debugging Node.**
 
@@ -59,9 +59,9 @@ Full reference: [`guides/howto/06-troubleshooting.md`](../../guides/howto/06-tro
 
 - **16:30** — All your zone has picked a track and is in pairs/trios.
 - **16:50** — Most of your zone has their track's script running (`npm run briefing` for A, `npm run check` for B, `npm run scan` for C). The 2–3 that don't are the ones to focus on.
-- **17:00** — *(facilitator pauses for a hand-raise check)* — anyone with their hand up gets you within 60 seconds.
-- **17:30** — Everyone in your zone has either hit the success criterion or is sitting at the installation bar / paired with a neighbor.
-- **17:40** — Build block ends. Help your zone **pack up mentally**: laptops closed, stretch, snacks. If someone has something demo-worthy, **point them to whoever runs the Showcase sign-up sheet** — open-mic slots are real; two minutes, no deck required.
+- **17:20** — *(facilitator pauses for a hand-raise check)* — anyone with their hand up gets you within 60 seconds.
+- **17:50** — Everyone in your zone has either hit the success criterion or is sitting at the installation bar / paired with a neighbor.
+- **18:00** — Build block ends. Help your zone **pack up mentally**: laptops closed, stretch, snacks. If someone has something demo-worthy, **point them to whoever runs the Showcase sign-up sheet** — open-mic slots are real; two minutes, no deck required.
 
 ---
 
@@ -69,7 +69,7 @@ Full reference: [`guides/howto/06-troubleshooting.md`](../../guides/howto/06-tro
 
 - **Don't refactor their code.** They want to learn, not watch you type.
 - **Don't lecture about OpenClaw architecture.** That's the impulse's job. If they ask, point at the slide deck or the [`concepts/01-concepts.md`](../../guides/concepts/01-concepts.md) link.
-- **Don't get pulled into "what about LangGraph / CrewAI / AutoGen?"** Smile, say "great Showcase question, ask after 18:00," move on.
+- **Don't get pulled into "what about LangGraph / CrewAI / AutoGen?"** Smile, say "great Showcase question, ask after 18:30," move on.
 - **Don't fix things alone.** Always pair — that's the learning moment.
 
 ---
@@ -88,11 +88,11 @@ Walk your zone slowly. Look over shoulders. **Ask "how's it going?"** to anyone 
 
 ---
 
-## 17:40–18:00 · Break
+## 18:00–18:30 · Break
 
 Hands-on is **paused**. You're not doing tech support in the hallway unless someone is truly stuck—prefer "we'll debug after the Showcase."
 
-## 18:00 · Showcase starts
+## 18:30 · Showcase starts
 
 Show up if you can. You've earned the audience. If the room needs queue-wrangling for open slots, help the facilitator until things are rolling—then you're off the hook.
 

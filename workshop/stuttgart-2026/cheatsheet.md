@@ -67,10 +67,10 @@ Full troubleshooting: [`guides/howto/06-troubleshooting.md`](../../guides/howto/
 
 ---
 
-## After the build (17:40+)
+## After the build (18:00+)
 
-- **17:40 — 18:00 · Break** — on purpose. Refill, breathe, find a seat. The Showcase is next.
-- **18:00 — 20:00 · OpenClaw Showcase** — curated demos **plus** spare slots for today's builds. If you shipped something, ask a volunteer how to grab a short open-mic turn.
+- **18:00 — 18:30 · Break** — on purpose. Refill, breathe, find a seat. The Showcase is next.
+- **18:30 — 20:00 · OpenClaw Showcase** — curated demos **plus** spare slots for today's builds. If you shipped something, ask a volunteer how to grab a short open-mic turn.
 - **Discord/Slack:** invite link on the back of this cheatsheet (or in the workshop terminal).
 - **Long-form guides:** [github.com/creators-stuttgart/openclaw-guides](https://github.com/creators-stuttgart/openclaw-guides)
 - **Official OpenClaw docs:** [openclaw.cc](https://openclaw.cc)

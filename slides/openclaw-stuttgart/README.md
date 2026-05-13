@@ -1,6 +1,6 @@
 # OpenClaw Hands-On · Stuttgart — Slides
 
-Self-contained HTML deck for the **Hands-On block (16:00–17:40)** and hand-off copy for **break + OpenClaw Showcase (18:00–20:00)** at the [OpenClaw Showcase & Hands On Stuttgart](https://luma.com/cgq6d8j9) event.
+Self-contained HTML deck for the **Hands-On block (16:00–18:00)** and hand-off copy for **break + OpenClaw Showcase (18:30–20:00)** at the [OpenClaw Showcase & Hands On Stuttgart](https://luma.com/cgq6d8j9) event.
 
 ## Files
 
